@@ -23,4 +23,16 @@
 3. 기타 API
  - 
 
- ###
+ ### 프로젝트 구성
+ -- public
+    -- assets
+        -- images
+            -- bg
+            -- logo
+            -- ui
+-- src
+    -- apis
+    -- components
+    -- data
+    -- feature
+    -- pages
