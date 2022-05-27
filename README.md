@@ -18,21 +18,23 @@
 ### 사용 기술 및 라이브러리
 1. 라이브러리
  - create-react-app (npx create-react-app crossfit-wod)
+ - styled-components (npm i styled-components)
+ - react-icons (npm i react-icons)
 2. Database
  - firebase (npm install firebase)
 3. 기타 API
  - 
 
- ### 프로젝트 구성
- -- public
-    -- assets
-        -- images
-            -- bg
-            -- logo
-            -- ui
--- src
-    -- apis
-    -- components
-    -- data
-    -- feature
-    -- pages
+### 프로젝트 구성
+ ㅡ public  
+ ㅡㅡ assets  
+ ㅡㅡㅡ images  
+ ㅡㅡㅡㅡ bg  
+ ㅡㅡㅡㅡ logo  
+ ㅡㅡㅡㅡ ui  
+ ㅡ src  
+ ㅡㅡ apis  
+ ㅡㅡ components  
+ ㅡㅡ data  
+ ㅡㅡ feature  
+ ㅡㅡ pages  
