@@ -1,31 +1,32 @@
 import React, { useState } from "react";
 import { AiFillDelete } from "react-icons/ai";
+import { insertData } from "../apis/FirebaseInstance";
 import PlusBtn from "../components/UI/PlusBtn";
 
 const MyWod = () => {
     const [type, setType] = useState("");
-    const [wodList, setWodList] = useState([]); 
+    const [wodList, setWodList] = useState([]);
+    const [count, setCount] = useState(0);
+    const [exercise, setExercise] = useState("");
+    const [weight, setWeight] = useState(0);
+    const [weightUnit, setWeightUnit] = useState("");
+    // const [data, setData] = useState();
 
-    const addList = () => {
-        console.log('add list');
-        const list = Array.from(wodList);
-        list.push(
-            <>
-            <td><input type="text" placeholder="횟수를 입력해주세요"/></td>
-            <td><input type="text" placeholder="운동 종류를 입력해주세요."/></td>
-            <td><input type="text" placeholder="무게를 입력해주세요."/></td>
-            <td><button onClick={deleteList}><AiFillDelete/></button></td>
-            </>
-        );
-        setWodList(list);
+    const insertWod = (e) => {
+        if(count === 0 || exercise === "") {
+            alert("운동 정보를 입력해주세요.");
+            return;
+        }
+
+        console.log('insert');
+        const data = {
+            count, 
+            exercise, 
+            weight: `${weight}${weightUnit}`
+        }
+        // insertData("recordWod", data);
     }
 
-    const deleteList = (e) => {
-        console.log(wodList);
-        const index = e.currentTarget.parentElement.parentElement.className.split("-")[2];
-        // const list = wodList.splice(index-1, 1);
-        // setWodList(list);
-    }
 
     return (
         <>
@@ -38,37 +39,37 @@ const MyWod = () => {
                     <option value="FT">For Time of</option>
                     <option value="AMRAP">AMRAP</option>
                 </select>
-                <input type="text" />
+                <input type="number" />
                 { type && <span>{type === "FT" ? "Round" : "Minutes"}</span> }
             </div>
             <div>
                 <label htmlFor="level">난이도</label>
-                <select id="level" name="level" onChange={e => console.log('')}>
+                <select id="level" name="level" onChange={e => console.log(e.target.value)}>
                     <option value="">선택</option>
                     <option value="Rxd">Rx'd</option>
                     <option value="A">A</option>
                     <option value="B">B</option>
                 </select>
-                <div>
-                    <table style={{borderTop: "1px solid black", borderCollapse: "collapse"}}>
-                        <thead>
-                           <tr>
-                                <th>횟수</th>
-                                <th>운동 이름</th>
-                                <th>무게</th>
-                                <th>삭제</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { wodList.length !== 0
-                                    &&  wodList.map((el, index) => <tr key={index+1} className={`wod-list-${index+1}`}>{el}</tr>)}
-                        </tbody>
-                    </table>
-                    <PlusBtn onClick={addList}/>
-                </div>
             </div>
+            <div>
+                <input type="number" onChange={e => setCount(e.target.value)} placeholder="횟수를 입력해주세요"/>
+                <input type="text" onChange={e => setExercise(e.target.value)} placeholder="운동 종류를 입력해주세요."/>
+
+                <input type="number" onChange={e => setWeight(e.target.value)} placeholder="무게를 입력해주세요."/>
+                <select name="weight" onChange={e => setWeightUnit(e.target.value)}>
+                    <option value="">무게</option>
+                    <option value="kg">kg</option>
+                    <option value="lb">lb</option>
+                </select>
+            </div>
+            <button>추가</button>
         </fieldset>
-        <button>기록하기!</button>
+        <div>
+            
+            내용이 추가되는 필드
+
+        </div>
+        <button onClick={insertWod}>기록하기!</button>
         </>
     );
 }
