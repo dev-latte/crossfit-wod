@@ -20,7 +20,6 @@ const database = firebase.firestore(app);
 
 
 // start database function
-
 export const insertData = async (document, uid, data) => {
     await setDoc(doc((database, document, uid)), data)
             .then(response => console.log(`${document}, insert success!`))
