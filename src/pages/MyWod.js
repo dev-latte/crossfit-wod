@@ -1,28 +1,30 @@
 import React, { useState } from "react";
-import { AiFillDelete } from "react-icons/ai";
 import { insertData } from "../apis/FirebaseInstance";
+import { isValidateCountNumber } from "../apis/IsValidation";
 import PlusBtn from "../components/UI/PlusBtn";
 
+import { AiFillDelete } from "react-icons/ai";
+
+
 const MyWod = () => {
+    const [wodList, setWodList] = useState([]); // 운동 정보(exerciseData) 객체의 배열
+
     const [type, setType] = useState("");
+    const [round, setRound] = useState(0);
     const [level, setLevel] = useState("");
+
     const [exerciseData, setExerciseData] = useState({
         count: 0,
         exercise: "",
         weight: ""
     });
+    const [weightUnit, setWeightUnit] = useState("");
 
-    const [wodList, setWodList] = useState([]); // 운동 정보(exerciseData) 객체의 배열
 
     // 임시 저장한 정보를 DB에 Insert하는 함수
     const insertWod = (e) => {
-
-
         const dateInstance = new Date();
         const date = `${dateInstance.getFullYear()}-${dateInstance.getMonth()+1}-${dateInstance.getDate()}`;
-        console.log(date)
-        // eslint-disable-next-line no-undef
-        // new Wod(type, level, wodList, new Date());
 
         console.log('insert');
         // insertData("recordWod", data);
@@ -30,15 +32,19 @@ const MyWod = () => {
 
     // 운동 정보(횟수, 운동이름, 무게)의 변화를 체크하는 함수
     const onChangeExerciseData = (e) => {
+        if(!isNaN(e.target.value)) {
+            e.target.value = isValidateCountNumber(e.target.value);
+        }
+
         const name = e.target.name;
         const value = e.target.value;
         const data = {...exerciseData};
         
-        if(name === "weight-unit" && value !== "") {
-            data.weight = `${data.weight.split(" ")[0]} ${value}`;
-        } else if(name === "weight") {
-            // 여기부터 작성하기 > 무게 단위까지 작성 후, 무게를 변경하면 무게 단위가 사라지는 현상처리
-            data.weight = `${value}`;
+        if(name === "weight") {
+            data.weight = `${value}${weightUnit}`;
+        } else if(name === "weight-unit") {
+            setWeightUnit(value);
+            data.weight = isNaN(Number(data.weight)) ? `${data.weight.substring(0, data.weight.length-2)}${value}` : `${data.weight}${value}`;
         } else {
             data[name] = value;
         }
@@ -46,18 +52,18 @@ const MyWod = () => {
         setExerciseData(data);
     }
 
-
     // 운동 정보(횟수, 운동이름, 무게)를 임시 추가하는 함수
     const addExercise = (e) => {
-        if(type === "" || level === "") {
+        if(type === "" || level === "" || exerciseData.count < 1 || !exerciseData.exercise) {
             alert("운동 정보를 입력해주세요.");
             return;
         }
 
-        console.log(exerciseData);
-        // const wod = new Wod(type, level);
-
+        const list = Array.from(wodList);
+        list.push(exerciseData);
+        setWodList(list);
     }
+
 
 
     return (
@@ -71,7 +77,7 @@ const MyWod = () => {
                     <option value="FT">For Time of</option>
                     <option value="AMRAP">AMRAP</option>
                 </select>
-                <input type="number" />
+                <input type="number" onChange={e => { e.target.value = isValidateCountNumber(e.target.value); setRound(e.target.value)}}/>
                 { type && <span>{type === "FT" ? "Round" : "Minutes"}</span> }
             </div>
             <div>
@@ -97,9 +103,14 @@ const MyWod = () => {
             <PlusBtn onClick={addExercise}></PlusBtn>
         </fieldset>
         <div>
-            
-            내용이 추가되는 필드
-
+            { wodList.length !== 0  
+                && wodList.map((el, index) =>  
+                                            <div key={index}>
+                                                <span>{el.count}</span>
+                                                <span>{el.exercise}</span>
+                                                <span>{el.weight}</span>
+                                            </div>
+            )}
         </div>
         <button onClick={insertWod}>기록하기!</button>
         </>
