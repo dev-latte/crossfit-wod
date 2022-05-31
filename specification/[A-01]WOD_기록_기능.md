@@ -17,3 +17,12 @@
 
 ## 5. 데이터베이스 구성
 document 이름, key 구성 등 기능과 관련된 db의 설명을 작성
+
+collection(table) : recordWod
+document : uid(예정)
+
+[표1] collection 구성
+key value
+type "For Time of", "AMRAP" 중 하나
+round "For Time of를 수행할 라운드" 혹은 "AMRAP을 수행할 시간"
+level "WOD의 난이도. 기본 Rx'd이며 A, B 순으로 난이도 조절"

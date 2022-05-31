@@ -1,7 +1,6 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore"
+import { initializeApp } from "firebase/app";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
-import { collection, doc, setDoc } from "firebase/firestore";
 
 
 const firebaseConfig = {
@@ -14,14 +13,14 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const database = firebase.firestore(app);
+const database = getFirestore(app);
 
 
 // start database function
-export const insertData = async (document, uid, data) => {
-    await setDoc(doc((database, document, uid)), data)
+export const insertData = async (collection, document, data) => {
+    await setDoc(doc(database, collection, document), data)
             .then(response => console.log(`${document}, insert success!`))
             .catch(err => alert(err) );
 }
