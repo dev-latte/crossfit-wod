@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { insertData } from "../apis/FirebaseInstance";
+import React, { useLayoutEffect, useState } from "react";
+import { insertData, selectDataFromDate } from "../apis/FirebaseInstance";
 import { isValidateCountNumber } from "../apis/IsValidation";
 import PlusBtn from "../components/UI/PlusBtn";
 
@@ -7,12 +7,13 @@ import { AiFillDelete } from "react-icons/ai";
 
 
 const MyWod = () => {
-    const [wodList, setWodList] = useState([]); // 운동 정보(exerciseData) 객체의 배열
+    const [wod, setWod] = useState();
 
     const [type, setType] = useState("");
     const [round, setRound] = useState("");
     const [level, setLevel] = useState("");
 
+    const [exerciseList, setExerciseList] = useState([]); // 운동 정보(exerciseData) 객체의 배열
     const [exerciseData, setExerciseData] = useState({
         count: "",
         exercise: "",
@@ -21,9 +22,19 @@ const MyWod = () => {
     const [weightUnit, setWeightUnit] = useState("");
 
 
+    useLayoutEffect(() => {
+        // 임시
+        const dateInstance = new Date();
+        const date = `${dateInstance.getFullYear()}-${dateInstance.getMonth()+1}-${dateInstance.getDate()}`;
+        selectDataFromDate("recordWod", date)
+            .then(response => setWod(response))
+            .catch(err => console.log(err));
+    }, []);
+
+
     // 임시 저장한 정보를 DB에 Insert하는 함수
     const insertWod = (e) => {
-        if(type === "" || round === 0 || level === "" || wodList.length === 0) {
+        if(type === "" || round === 0 || level === "" || exerciseList.length === 0) {
             alert("WOD 정보를 입력해주세요");
             return;
         }
@@ -39,14 +50,14 @@ const MyWod = () => {
             type,
             round : `${round}${roundUnit}`,
             level,
-            data: wodList,
+            data: exerciseList,
             date
         }
 
         console.log('insert');
         insertData("recordWod", "test-uid", data)
             .then(el => {
-                setWodList([]);
+                exerciseList([]);
                 setType("");
                 setRound("");
                 setLevel("");
@@ -74,9 +85,9 @@ const MyWod = () => {
 
         const data = {...exerciseData, weight: `${exerciseData.weight}${weightUnit}`};
         console.log(data);
-        const list = Array.from(wodList);
+        const list = Array.from(exerciseList);
         list.push(data);
-        setWodList(list);
+        setExerciseList(list);
 
         // reset input and select box
         setExerciseData({
@@ -87,6 +98,7 @@ const MyWod = () => {
         setWeightUnit("");
     }
 
+    // 추가한 운동 정보를 삭제하기 위한 함수
     const deleteExercise = (e) => {
         console.log(e.target.value);
     }
@@ -96,7 +108,12 @@ const MyWod = () => {
 
     return (
         <>
-        <fieldset>
+        {
+            wod 
+            ? wod.date // wod가 있을 때
+            : // 없을 때
+            <>
+            <fieldset>
             <legend>Workout of the Day!</legend>
             <div>
                 <label htmlFor="type">종류</label>
@@ -122,8 +139,8 @@ const MyWod = () => {
                 </select>
             </div>
             <div>
-            { wodList.length !== 0  
-                && wodList.map((el, index) =>  
+            { exerciseList.length !== 0  
+                && exerciseList.map((el, index) =>  
                                             <div key={index}>
                                                 <span>{el.count}</span>
                                                 <span>{el.exercise}</span>
@@ -191,8 +208,8 @@ const MyWod = () => {
             </div>
             <PlusBtn onClick={addExercise}></PlusBtn>
         </div>
-        
-
+        </>
+        }
         </>
     );
 }

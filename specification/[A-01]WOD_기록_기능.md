@@ -24,5 +24,6 @@ document : uid(예정)
 [표1] collection 구성
 key value
 type "For Time of", "AMRAP" 중 하나
-round "For Time of를 수행할 라운드" 혹은 "AMRAP을 수행할 시간"
+round 
 level "WOD의 난이도. 기본 Rx'd이며 A, B 순으로 난이도 조절"
+date "WOD 수행 날"

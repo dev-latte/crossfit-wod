@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 
 
@@ -19,12 +19,18 @@ const database = getFirestore(app);
 
 
 // start database function
-export const insertData = async (collection, document, data) => {
-    await setDoc(doc(database, collection, document), data)
+export const insertData = async (table, document, data) => {
+    await setDoc(doc(database, table, document), data)
             .then(response => console.log(`${document}, insert success!`))
-            .catch(err => alert(err) );
+            .catch(err => alert(err));
 }
 
-export const selectData = () => {
+export const selectDataFromDate = async (table, date) => {
+  const result = [];
 
+  const q = query(collection(database, table), where("date", "==", date));
+  const querySnapShot = await getDocs(q);
+  querySnapShot.forEach(doc => result.push(doc.data()));
+
+  return result[0];
 }

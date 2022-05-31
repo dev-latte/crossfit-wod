@@ -1,6 +1,7 @@
 export const isValidateCountNumber = (number) => {
     let result = number;
 
+    // 후에 input type="number"값에 e, E가 삽입되는 현상 수정할 것
     if(result < 0) result = Math.abs(result);           // 음수 체크
     if(result % 1 !== 0) result = Math.floor(result);   // 소수점 체크
 
