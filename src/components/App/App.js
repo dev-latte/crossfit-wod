@@ -1,3 +1,4 @@
+import CreateWodCard from '../../feature/CreateWodCard';
 import MyWod from '../../pages/MyWod';
 import './App.css';
 
@@ -17,8 +18,8 @@ function App() {
           Learn React
         </a>
       </header> */}
-      <MyWod></MyWod>
-
+      {/* <MyWod></MyWod> */}
+      <CreateWodCard></CreateWodCard>
     </div>
   );
 }

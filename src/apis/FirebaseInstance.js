@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { collection, doc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 
-
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -33,4 +32,13 @@ export const selectDataFromDate = async (table, date) => {
   querySnapShot.forEach(doc => result.push(doc.data()));
 
   return result[0];
+}
+
+export const selectMovementData = async (table) => {
+  const result = [];
+
+  const querySnapShot = await getDocs(collection(database, table));
+  querySnapShot.forEach(doc => result.push(doc.data()));
+
+  return result;
 }
