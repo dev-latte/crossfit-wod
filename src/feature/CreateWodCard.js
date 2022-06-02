@@ -1,6 +1,7 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import styledComponents from "styled-components";
 import { selectMovementData } from "../apis/FirebaseInstance";
+import WodCard from "../components/Template/WodCard";
 
 const MovementsTemplate = styledComponents.fieldset`
     display: flex;
@@ -11,15 +12,19 @@ const MovementsTemplate = styledComponents.fieldset`
 `;
 
 const CreateWodCard = () => {
-    const [type, setType] = useState();
-    const [isTeam, setIsTeam] = useState(false);
     const [movementList, setMovementList] = useState([]);
+
+    const [type, setType] = useState("ft");
+    const [isTeam, setIsTeam] = useState(false);
+    const [selectMovements, setSelectMovements] = useState(new Set());
+    const [wodData, setWodData] = useState();
 
 
     useLayoutEffect(() => {
         getMovementsData();
     }, []);
 
+    // get wod movement list data
     const getMovementsData = () => {
         selectMovementData("crossfitMovement")
             .then(response => { 
@@ -27,6 +32,43 @@ const CreateWodCard = () => {
              })
             .catch(err => alert(err));
     }
+
+    const onCheckedMovement = (e) => {
+        const target = e.target.name;
+        const set = new Set(selectMovements);
+        if(set.has(target)) {
+            set.delete(target);
+        } else {
+            set.add(target);
+        }
+        setSelectMovements(set);
+    }
+
+    const createWodCard = () => {
+        console.log("create");
+        const movements = new Map();
+        selectMovements.forEach(el => {
+            for(let i = 0; i < movementList.length; i++) {
+                if(el === movementList[i].id) {
+                    movements.set(el, movementList[i]);
+                    break;
+                }
+            }
+        })
+
+        // set data
+        setWodData({
+            "type": type === "ft" ? "For Time of" : type === "amrap" ? "AMRAP" : "Crossfit Total",
+            isTeam,
+            movements
+        });
+
+        // reset data
+        setType("ft");
+        setIsTeam(false);
+        setSelectMovements(new Set());
+    }
+
 
     return (
         <>
@@ -41,7 +83,7 @@ const CreateWodCard = () => {
 
             <fieldset>
                 <legend>Team of</legend>
-                <input type="checkbox" name="team" id="team" onChange={e => setIsTeam(e.target.checked)}/>
+                <input type="checkbox" name="team" id="team" onChange={e => setIsTeam(e.target.checked)} checked={isTeam}/>
                 <label htmlFor="team">Team</label>
             </fieldset>
 
@@ -50,13 +92,18 @@ const CreateWodCard = () => {
                 {
                     setMovementList.length !== 0 &&
                         movementList.map((el, index) => <div key={index}>
-                                                            <input type="checkbox" name={el.id} id={el.id} />
+                                                            <input type="checkbox" name={el.id} id={el.id} onChange={onCheckedMovement} checked={selectMovements.has(el.id)} value={el.name}/>
                                                             <label htmlFor={el.id}>{el.name}</label>
                                                         </div>
                         )
                 }
             </MovementsTemplate>
-            <button>Create WOD CARD!</button>
+            <button onClick={createWodCard}>Create WOD CARD!</button>
+
+            {
+                wodData && <WodCard data={wodData}/>
+            }
+
         </>
     );
 }
