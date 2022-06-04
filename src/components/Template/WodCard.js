@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styledComponents from "styled-components";
+import Button from "../UI/Button";
 
 const StyledWodCard = styledComponents.div`
     width: 350px;
@@ -9,17 +10,25 @@ const StyledWodCard = styledComponents.div`
 
 `;
 
+const StyledMovementBox = styledComponents.div`
+    border: 1px solid black;
+    margin: 5px 5px;
+    padding-bottom: 10px;
+`;
+
 const WodCard = ({ data }) => {
-    const { type, isTeam, movements } = data;
+    const {type, isTeam, movements} = data;
     const [teamOf, setTeamOf] = useState(2);
     const [typeCount, setTypeCount] = useState();
-    const [level, setLevel] = useState();
+    const [level, setLevel] = useState("rxd");
+    const [recordData, setRecordData] = useState([]);   // wod 기록 
+    
+    const test = () => {
+        // 내일은 와드 기록 insert부터 작업하기
+        console.log(type, teamOf, typeCount, level);
+    }
 
-    useEffect(() => {
-        console.log(data);
-    }, [])
-
-
+    // Crossfit Total 같은 경우는 다른 방식으로 카드를 보여줄 예정, 지금은 신경쓰지 않기
     return (
         <StyledWodCard>
             <p>Workout of the Day!</p>
@@ -40,19 +49,46 @@ const WodCard = ({ data }) => {
                 <p>movement list</p>
                 <label htmlFor="level">난이도</label>
                 <select id="level" name="level" onChange={e => setLevel(e.target.value)} value={level}>
-                    <option value="Rxd">Rx'd</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
+                    <option value="rxd" defaultValue>Rx'd</option>
+                    <option value="a">A</option>
+                    <option value="b">B</option>
                 </select>
                 {/* 운동 종류 및 체크 단위부터 시작 */}
-                { Array.from(movements).map((el, index) => 
-                                                            <div key={index}> 
-                                                                <label htmlFor="">{el[1].name}</label>
-                                                                <input type="number" name={`${el[1].id}-${el[1].unit}`} id={`${el[1].id}-${el[1].unit}`}/>
-                                                            </div>
+                { Array.from(movements).map((el, index) =>  <StyledMovementBox key={index}> 
+                                                                <h4>{el[1].name}</h4>
+                                                                <div>
+                                                                    <label htmlFor={`${el[1].id}-unit`}>Goal</label>
+                                                                    <input type="number" name={`${el[1].id}-unit`} id={`${el[1].id}-unit`}/>
+                                                                    <select name="unit" id="unit">
+                                                                        {el[1].unit.map((el, index) => <option key={index} value={el}>{el}</option>)}
+                                                                    </select>
+                                                                </div>
+                                                                {
+                                                                    el[1].weight &&
+                                                                        <div>
+                                                                            <label htmlFor="weight">Weight</label>
+                                                                            <input type="number" name="weight" id="weight"/>
+                                                                            <select name="weight-unit" id="weight-unit">
+                                                                                <option value="lb" name="lb">lb</option>
+                                                                                <option value="kg" name="kg">kg</option>
+                                                                            </select>
+                                                                        </div>
+                                                                }
+                                                            </StyledMovementBox>
                 )}
+                <div>
+                    <label>Record WOD</label>
+                    {
+                    type === "For Time of" 
+                        ? <><input type="number" name="" id="" />:<input type="number" name="" id="" /></>
+                        : <><input type="number" name="" id="" /><span>Round</span></>
+                    }
+                </div>
+
+
+            
             </div>
-        
+            <Button onClick={test} value="등록"/>
         </StyledWodCard>
     );
 }

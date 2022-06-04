@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import styledComponents from "styled-components";
 import { selectMovementData } from "../apis/FirebaseInstance";
 import WodCard from "../components/Template/WodCard";
@@ -32,6 +32,7 @@ const CreateWodCard = () => {
              })
             .catch(err => alert(err));
     }
+
 
     const onCheckedMovement = (e) => {
         const target = e.target.name;
