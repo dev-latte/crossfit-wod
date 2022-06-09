@@ -4,6 +4,7 @@ import Button from "../UI/Button";
 
 import { HiUsers, HiUserGroup } from "react-icons/hi"
 import { isNull, isValidateCountNumber } from "../../apis/IsValidation";
+import { insertData } from "../../apis/FirebaseInstance";
 
 const StyledWodCard = styledComponents.div`
     width: 350px;
@@ -21,24 +22,24 @@ const StyledMovementBox = styledComponents.div`
 
 const WodCard = ({ data }) => {
     const {type, isTeam, movements} = data;
-    const [teamOf, setTeamOf] = useState();
-    const [typeCount, setTypeCount] = useState(1);
+    const [teamOf, setTeamOf] = useState("");
+    const [typeCount, setTypeCount] = useState("");
     const [level, setLevel] = useState("rxd");
 
     const movementDataDefault = {};
     movements.forEach((value, key) => movementDataDefault[key] = {
-        goal: 1,
+        goal: "",
         "goal-unit": value.unit[0],
-        weight: 1,
+        weight: false,
         "weight-unit": "lb"
     });
 
     const [movementData, setMovementData] = useState(movementDataDefault);
-    const [recordData, setRecordData] = useState({});   // wod 기록
+    const [recordData, setRecordData] = useState("");
+    const [complete, setComplete] = useState("");
 
-    const test = () => {
 
-
+    const insertWod = (data) => {
         if(isTeam && isNull(teamOf)) {
             alert("인원을 선택해주세요");
             return;
@@ -46,30 +47,30 @@ const WodCard = ({ data }) => {
 
         if(isNull(typeCount)) {
             alert("와드 정보를 입력해주세요.");
+            return;
         }
 
-
-        // 내일은 와드 기록 insert부터 작업하기
-        console.log(type, teamOf, typeCount, level, teamOf);
+        insertData("recordWod", "test-uid", data)
+            .then(el => {
+                // 인서트 작업은 CreateWodCard에서 진행할 것
+                // WOD 카드 정보를 초기화해야하기 때문
+                // WOD 카드 정보 초기화 후, DB를 통해 값을 가져온다.
+                // DB에 값이 있으면 DB정보를 띄우고, 없을 시 작성할 수 있는 폼을 출력하도록 수정
+            });
     }
 
     const onChangeMovementData = (e) => {
-        //원하는 데이터 map / key = movement id / value = { goal, goal-unit, weight, weight-unit }
         const key = e.target.name;
         const target = e.target.id;
-        console.log(e.target.name);
-        console.log(movementData);
 
-        let inputKey;
-        
+        let inputKey;        
         if(target.includes("goal-unit")){
             inputKey = "goal-unit";
         } else if(target.includes("goal")){
             inputKey = "goal";
         } else if(target.includes("weight-unit")) {
             inputKey = "weight-unit";
-        } 
-        else if(target.includes("weight")) {
+        } else if(target.includes("weight")) {
             inputKey = "weight";
         }
 
@@ -79,10 +80,44 @@ const WodCard = ({ data }) => {
         setMovementData(data);
     }
 
-    const createMovementData = (e) => {
-        console.log(type, isTeam, typeCount, level, movementData);
+    const onChangeRecord = (e) => {
+        const target = e.target.name;
+        const value = e.target.value;
 
+        if(target === "minutes") {
+            setRecordData({...recordData, min: value});
+            return;
+        }
+
+        // 초의 경우 60초를 넘는 입력은 불가하도록 추가
+        if(target === "second") {
+            setRecordData({...recordData, sec: value});
+            return;
+        }
+
+        setRecordData(value);
     }
+
+    const createMovementData = (e) => {
+        const count = `${typeCount} ${type === "For Time of" ? "Round" : "Minute"}`;
+        const record = !isNull(recordData.min) ? `${recordData.min}:${recordData.sec}` : recordData; 
+        const dateInstance = new Date();
+        const date = `${dateInstance.getFullYear()}-${dateInstance.getMonth()+1}-${dateInstance.getDate()}`;
+
+        const data = {
+            type,
+            count,
+            level,
+            complete,
+            data: movementData,
+            record,
+            date
+        }
+
+        insertWod(data);
+    }
+
+
 
     // Crossfit Total 같은 경우는 다른 방식으로 카드를 보여줄 예정, 지금은 신경쓰지 않기
     return (
@@ -124,7 +159,7 @@ const WodCard = ({ data }) => {
                                                                         id={`${el[1].id}-goal`}
                                                                         min={1}
                                                                         onChange={onChangeMovementData} 
-                                                                        value={movementData ? movementData[el[1].id]["goal"] : 1}
+                                                                        value={movementData ? movementData[el[1].id]["goal"] : ""}
                                                                     />
                                                                     <select 
                                                                         name={el[1].id} 
@@ -160,11 +195,34 @@ const WodCard = ({ data }) => {
                                                             </StyledMovementBox>
                 )}
                 <div>
-                    <label htmlFor={type === "For Time of" ? "minutes" : "round"}>Record WOD</label>
                     {
-                        type === "For Time of" 
-                            ? <><input type="number" name="minutes" id="minutes" />:<input type="number" name="second" id="second" /></>
-                            : <><input type="number" name="round" id="round" /><span>Round</span></>
+                        <>
+                            <p>Did you go the distance?</p>
+                            <div>
+                                <input type="radio" name="complete" id="yes" value="yes" checked={complete === "yes"} onChange={e => setComplete(e.target.value)}/>
+                                <label htmlFor="yes">Yes</label>
+                            </div>
+                            <div>
+                                <input type="radio" name="complete" id="no" value="no" checked={complete === "no"} onChange={e => setComplete(e.target.value)}/>
+                                <label htmlFor="no">No</label>
+                            </div>
+                        </>
+                    }
+                    <p>Record WOD</p>
+                    {
+                        complete === "yes" && type === "For Time of" &&
+                            <>
+                                <input type="number" name="minutes" id="minutes" onChange={onChangeRecord}/>분
+                                <input type="number" name="second" id="second" onChange={onChangeRecord}/>초
+                            </>
+                    }
+                    {
+                        complete === "yes" && type !== "For Time of" &&
+                            <><input type="number" name="round" id="round" onChange={onChangeRecord}/><span>Round</span></>
+                    }
+                    {
+                        complete === "no" 
+                            && <input type="text" name="result" id="result" onChange={onChangeRecord}/>
                     }
                 </div>
             </div>
