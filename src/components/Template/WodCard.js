@@ -20,9 +20,9 @@ const StyledMovementBox = styledComponents.div`
     padding-bottom: 10px;
 `;
 
-const WodCard = ({ data }) => {
+const WodCard = ({ data, insertWod }) => {
     const {type, isTeam, movements} = data;
-    const [teamOf, setTeamOf] = useState("");
+    const [teamOf, setTeamOf] = useState(false);
     const [typeCount, setTypeCount] = useState("");
     const [level, setLevel] = useState("rxd");
 
@@ -37,27 +37,6 @@ const WodCard = ({ data }) => {
     const [movementData, setMovementData] = useState(movementDataDefault);
     const [recordData, setRecordData] = useState("");
     const [complete, setComplete] = useState("");
-
-
-    const insertWod = (data) => {
-        if(isTeam && isNull(teamOf)) {
-            alert("인원을 선택해주세요");
-            return;
-        }
-
-        if(isNull(typeCount)) {
-            alert("와드 정보를 입력해주세요.");
-            return;
-        }
-
-        insertData("recordWod", "test-uid", data)
-            .then(el => {
-                // 인서트 작업은 CreateWodCard에서 진행할 것
-                // WOD 카드 정보를 초기화해야하기 때문
-                // WOD 카드 정보 초기화 후, DB를 통해 값을 가져온다.
-                // DB에 값이 있으면 DB정보를 띄우고, 없을 시 작성할 수 있는 폼을 출력하도록 수정
-            });
-    }
 
     const onChangeMovementData = (e) => {
         const key = e.target.name;
@@ -101,19 +80,18 @@ const WodCard = ({ data }) => {
     const createMovementData = (e) => {
         const count = `${typeCount} ${type === "For Time of" ? "Round" : "Minute"}`;
         const record = !isNull(recordData.min) ? `${recordData.min}:${recordData.sec}` : recordData; 
-        const dateInstance = new Date();
-        const date = `${dateInstance.getFullYear()}-${dateInstance.getMonth()+1}-${dateInstance.getDate()}`;
 
         const data = {
             type,
             count,
+            teamOf,
             level,
             complete,
             data: movementData,
             record,
-            date
         }
 
+        // CreateWodCard.js 에 있는 함수
         insertWod(data);
     }
 

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { collection, doc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocFromCache, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 
 const firebaseConfig = {
@@ -24,14 +24,26 @@ export const insertData = async (table, document, data) => {
             .catch(err => alert(err));
 }
 
-export const selectDataFromDate = async (table, date) => {
-  const result = [];
+export const selectWodDataFromDate = async (table, document, setWodCard) => {
+  console.log('select');
+  const docRef = doc(database, table, document);
+  await getDoc(docRef)
+          .then(response => {
+            if(response.exists) { 
+              setWodCard(response.data()); 
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
 
-  const q = query(collection(database, table), where("date", "==", date));
-  const querySnapShot = await getDocs(q);
-  querySnapShot.forEach(doc => result.push(doc.data()));
+  // const result = [];
 
-  return result[0];
+  // const q = query(collection(database, table), where("date", "==", date));
+  // const querySnapShot = await getDocs(q);
+  // querySnapShot.forEach(doc => result.push(doc.data()));
+
+  // return result[0];
 }
 
 export const selectMovementData = async (table) => {

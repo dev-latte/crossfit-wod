@@ -1,8 +1,7 @@
 import CreateWodCard from '../../feature/CreateWodCard';
-import MyWod from '../../pages/MyWod';
 import './App.css';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       {/* <header className="App-header">
@@ -18,7 +17,6 @@ function App() {
           Learn React
         </a>
       </header> */}
-      {/* <MyWod></MyWod> */}
       <CreateWodCard></CreateWodCard>
     </div>
   );
