@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styledComponents from "styled-components";
 import Button from "../UI/Button";
 
 import { HiUsers, HiUserGroup } from "react-icons/hi"
 import { isNull, isValidateCountNumber } from "../../apis/IsValidation";
-import { insertData } from "../../apis/FirebaseInstance";
 
 const StyledWodCard = styledComponents.div`
     width: 350px;
@@ -87,7 +86,7 @@ const WodCard = ({ data, insertWod }) => {
             teamOf,
             level,
             complete,
-            data: movementData,
+            movements: movementData,
             record,
         }
 

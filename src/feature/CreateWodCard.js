@@ -8,7 +8,7 @@ const MovementsTemplate = styledComponents.div`
     display: flex;
     flex-wrap: wrap;
     border: 1px solid black;
-    width: 50%;
+    width: 80%;
     div{
         padding: 2px 5px;
     }
