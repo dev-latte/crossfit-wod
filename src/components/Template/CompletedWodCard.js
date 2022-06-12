@@ -51,7 +51,7 @@ const MovementCard = styledComponents.div`
     margin: 5px 0px;
     >p{
         font-size: 15px;
-        font-family: 'Orbitron', sans-serif;
+        font-family: "Orbitron", sans-serif;
         font-weight: 700;
         margin-bottom: 5px;
 }

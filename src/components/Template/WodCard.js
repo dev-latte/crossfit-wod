@@ -203,7 +203,7 @@ const WodCard = ({ data, insertWod }) => {
                     }
                 </div>
             </div>
-            <Button onClick={createMovementData} value="등록"/>
+            <Button onClick={createMovementData}>등록</Button>
         </StyledWodCard>
     );
 }

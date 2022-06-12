@@ -1,41 +1,50 @@
 import React, { useLayoutEffect, useState } from "react";
 import styledComponents from "styled-components";
-import { insertData, selectMovementData, selectWodDataFromDate } from "../apis/FirebaseInstance";
+import { insertData, selectMovementData } from "../apis/FirebaseInstance";
 import { isNull } from "../apis/IsValidation";
 import WodCard from "../components/Template/WodCard";
+import Button from "../components/UI/Button";
+import Checkbox from "../components/UI/Checkbox";
 
 const MovementsTemplate = styledComponents.div`
     display: flex;
     flex-wrap: wrap;
     border: 1px solid black;
-    width: 80%;
+    padding: 10px 5px;
     div{
         padding: 2px 5px;
     }
 `;
 
+const CategoryContainer = styledComponents.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid salmon;
+    width: 100%;
+    margin: 10px 0px;
+    padding: 5px;
+    >span {
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+`;
+
 const CreateWodCard = () => {
-    const [isLoading, setIsLoading] = useState(true);
     const [movementList, setMovementList] = useState([]);
     const [type, setType] = useState("ft");
     const [isTeam, setIsTeam] = useState(false);
     const [selectMovements, setSelectMovements] = useState(new Set());
     const [wodData, setWodData] = useState();
 
-    const [wodCard, setWodCard] = useState();       // 저장되어있는 (날짜 기준) wod 값
-
     useLayoutEffect(() => {
-        if(isLoading) { getMovementsData(); }
-
-        const dateInstance = new Date();
-        const date = `${dateInstance.getFullYear()}-${dateInstance.getMonth()+1}-${dateInstance.getDate()}`;
-        getWodData(date);
-
-        return () => { setIsLoading(false); }
-    }, [wodData]);
+        getMovementsData();
+    }, []);
 
     // get wod movement list data
     const getMovementsData = () => {
+        console.log('movements');
         selectMovementData("crossfitMovement")
             .then(response => { 
                 setMovementList(response);
@@ -93,47 +102,33 @@ const CreateWodCard = () => {
             .then(el => {
                 alert("WOD 기록이 완료되었습니다. 수고하셨습니다!");
                 setWodData();
-                // DB에 값이 있으면 DB정보를 띄우고, 없을 시 작성할 수 있는 폼을 출력하도록 수정
-                // 이 경우, WOD Card를 재사용 할 수 있을지 고민해보기
-                // UI 컴포넌트 분리해서 재사용 시도
-                // 스타일링 적용하기(css)
-                // movements에 검색기능 추가하기(잘 안보여서)
             });
-    }
-
-    const getWodData = (date) => {
-        selectWodDataFromDate("recordWod", `uid-${date}`, setWodCard);
     }
 
     return (
         <>
-            <div>
-                <p>Carry Out</p>
+            <CategoryContainer>
+                <span>Today is...</span>
                 <select id="type" name="type" onChange={e => setType(e.target.value)} value={type}>
                     <option value="ft" defaultValue>For Time of</option>
                         <option value="amrap">AMRAP</option>
                     <option value="crosfit-total">Crossfit Total</option>
                 </select>
-            </div>
-            <div>
-                <p>Team of</p>
-                <input type="checkbox" name="team" id="team" onChange={e => setIsTeam(e.target.checked)} checked={isTeam}/>
-                <label htmlFor="team">Team</label>
-            </div>
-            <div>
-                <p>Movements</p>
+            </CategoryContainer>
+            <CategoryContainer>
+                <span>Team of</span>
+                <Checkbox type="checkbox" key={0} el={{name: "team", id: "team"}} onChange={e => setIsTeam(e.target.checked)} checked={isTeam}/>
+            </CategoryContainer>
+            <CategoryContainer>
+                <span>Movements</span>
                 <MovementsTemplate>
                     {
-                        setMovementList.length !== 0 &&
-                            movementList.map((el, index) => <div key={index}>
-                                                                <input type="checkbox" name={el.id} id={el.id} onChange={onCheckedMovement} checked={selectMovements.has(el.id)} value={el.name}/>
-                                                                <label htmlFor={el.id}>{el.name}</label>
-                                                            </div>
-                            )
+                        setMovementList.length !== 0 
+                            && movementList.map((el, index) => <Checkbox type="checkbox" key={index} el={el} onChange={onCheckedMovement} checked={selectMovements.has(el.id)}/>)
                     }
                 </MovementsTemplate>
-            </div>
-            <button onClick={createWodCard}>Create WOD CARD!</button>
+            </CategoryContainer>
+            <Button onClick={createWodCard} width="250px">Create WOD CARD!</Button>
             { wodData && <WodCard data={wodData} insertWod={insertWod}/> }
         </>
     );
