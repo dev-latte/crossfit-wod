@@ -88,6 +88,7 @@ const WodCard = ({ data, insertWod }) => {
             complete,
             movements: movementData,
             record,
+            deleted: false
         }
 
         // CreateWodCard.js 에 있는 함수

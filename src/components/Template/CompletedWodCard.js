@@ -2,6 +2,8 @@ import React from "react";
 import styledComponents from "styled-components";
 
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import Button from "../UI/Button";
+import { updateDeletedonWodData } from "../../apis/FirebaseInstance";
 
 
 const CardTemplate = styledComponents.div`
@@ -15,11 +17,7 @@ const CardHeader = styledComponents.div`
     height: 27px;
     border-bottom: 1px solid black;
     text-align: right;
-    padding: 2px 10px;
-    >svg {
-        font-size: 21px;
-        margin-left: 5px;
-    }
+    // padding: 2px 10px;
 `;
 
 const CardBody = styledComponents.div`
@@ -57,15 +55,15 @@ const MovementCard = styledComponents.div`
 }
 `;
 
-const CompletedWodCard = ({ wodData }) => {
+const CompletedWodCard = ({ wodData, deleteData }) => {
     const { type, count, complete, movements, level, record, teamOf } = wodData;
     const movementKey = Object.keys(movements);
     
     return (
         <CardTemplate>
             <CardHeader>
-                <AiFillEdit/>
-                <AiFillDelete/>
+                <Button width="30px"><AiFillEdit/></Button>
+                <Button onClick={deleteData} width="30px"><AiFillDelete/></Button>
             </CardHeader>
             <CardBody>
                 <CardTitle>WOD 기록표</CardTitle>

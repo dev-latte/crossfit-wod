@@ -128,7 +128,7 @@ const CreateWodCard = () => {
                     }
                 </MovementsTemplate>
             </CategoryContainer>
-            <Button onClick={createWodCard} width="250px">Create WOD CARD!</Button>
+            <Button onClick={createWodCard}>Create WOD CARD!</Button>
             { wodData && <WodCard data={wodData} insertWod={insertWod}/> }
         </>
     );

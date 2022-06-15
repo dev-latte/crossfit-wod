@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
 
 const firebaseConfig = {
@@ -29,21 +29,13 @@ export const selectWodDataFromDate = async (table, document, setWodCard) => {
   const docRef = doc(database, table, document);
   await getDoc(docRef)
           .then(response => {
-            if(response.exists) { 
+            if(response.exists && !(response.data().deleted)) { 
               setWodCard(response.data()); 
             }
           })
           .catch(err => {
             console.log(err);
           });
-
-  // const result = [];
-
-  // const q = query(collection(database, table), where("date", "==", date));
-  // const querySnapShot = await getDocs(q);
-  // querySnapShot.forEach(doc => result.push(doc.data()));
-
-  // return result[0];
 }
 
 export const selectMovementData = async (table) => {
@@ -53,4 +45,17 @@ export const selectMovementData = async (table) => {
   querySnapShot.forEach(doc => result.push(doc.data()));
 
   return result;
+}
+
+// delete wod data
+export const updateDeletedonWodData = async (table, document, setWodCard) => {
+  const ref = doc(database, table, document);
+  await updateDoc(ref, { deleted: true })
+    .then(response => {
+      setWodCard();
+      // 값 없음
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }

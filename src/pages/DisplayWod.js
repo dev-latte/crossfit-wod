@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from "react";
 import styledComponents from "styled-components";
-import { selectWodDataFromDate } from "../apis/FirebaseInstance";
+import { selectWodDataFromDate, updateDeletedonWodData } from "../apis/FirebaseInstance";
 import CompletedWodCard from "../components/Template/CompletedWodCard";
 import CreateWodCard from "../feature/CreateWodCard";
 
@@ -28,11 +28,20 @@ const DisplayWod = () => {
         selectWodDataFromDate("recordWod", `uid-${date}`, setTodayWodData);
     }
 
+    const deleteWodData = (e) => {
+        const dateInstance = new Date();
+        const date = `${dateInstance.getFullYear()}-${dateInstance.getMonth()+1}-${dateInstance.getDate()}`;
+        const message = "데이터를 삭제하시겠습니까?";
+        if(window.confirm(message)) {
+            updateDeletedonWodData("recordWod", `uid-${date}`, setTodayWodData);
+        }
+    }
+
     return (
         <TemplateDiv>
             {
                 todayWodData 
-                    ? <CompletedWodCard wodData={todayWodData}/>
+                    ? <CompletedWodCard wodData={todayWodData} deleteData={deleteWodData}/>
                     : <CreateWodCard/>
             }
         </TemplateDiv>

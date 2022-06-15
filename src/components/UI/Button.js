@@ -2,17 +2,19 @@ import React from "react";
 import styledComponents from "styled-components";
 
 const StyledButton = styledComponents.button`
-    padding: 5px 10px;
+    width: ${(props) => props.width || "250px"};
     border: none;
-    color: #fff;
-    font-family: "Karla", sans-serif;
     background-color: #23272b;
-    width: 250px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    color: #fff;
+    padding: 5px 10px;
+    cursor: pointer;
 `;
 
-const Button = ({ onClick, children }) => {
+const Button = ({ onClick, children, width }) => {
     return (
-        <StyledButton onClick={onClick}>{children}</StyledButton>
+        <StyledButton onClick={onClick} width={width}>{children}</StyledButton>
     );
 }
 
