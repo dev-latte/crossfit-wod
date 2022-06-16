@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc, updateDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth"
+import { isNull } from "./IsValidation";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -19,23 +20,24 @@ const database = getFirestore(app);
 
 // start database function
 export const insertData = async (table, document, data) => {
-    await setDoc(doc(database, table, document), data)
-            .then(response => console.log(`${document}, insert success!`))
-            .catch(err => alert(err));
+  console.log(data);
+  await setDoc(doc(database, table, document), data)
+    .then(response => console.log(`${document}, insert success!`))
+    .catch(err => alert(err));
 }
 
 export const selectWodDataFromDate = async (table, document, setWodCard) => {
   console.log('select');
   const docRef = doc(database, table, document);
   await getDoc(docRef)
-          .then(response => {
-            if(response.exists && !(response.data().deleted)) { 
-              setWodCard(response.data()); 
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
+    .then(response => {
+      if (response.exists() && !(response.data().deleted)) {
+        setWodCard(response.data());
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 export const selectMovementData = async (table) => {

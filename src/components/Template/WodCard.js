@@ -4,20 +4,16 @@ import Button from "../UI/Button";
 
 import { HiUsers, HiUserGroup } from "react-icons/hi"
 import { isNull, isValidateCountNumber } from "../../apis/IsValidation";
+import Input from "../UI/Input";
+import Label from "../UI/Label";
+import Subject from "../UI/Subject";
+import WodCardTemplate from "./WodCardTemplate";
+import MovementCard from "./MovementsCard";
 
-const StyledWodCard = styledComponents.div`
-    width: 350px;
-    height: auto;
-    border: 1px solid black;
-    border-radius: 16px;
-    padding: 10px;
-`;
-
-const StyledMovementBox = styledComponents.div`
-    border: 1px solid black;
-    margin: 5px 5px;
-    padding-bottom: 10px;
-`;
+// const StyledMovementBox = styledComponents.div`
+//     // border: 1px solid black;
+//     padding-bottom: 10px;
+// `;
 
 const WodCard = ({ data, insertWod }) => {
     const {type, isTeam, movements} = data;
@@ -99,38 +95,36 @@ const WodCard = ({ data, insertWod }) => {
 
     // Crossfit Total 같은 경우는 다른 방식으로 카드를 보여줄 예정, 지금은 신경쓰지 않기
     return (
-        <StyledWodCard>
-            <p>Workout of the Day!</p>
+        <WodCardTemplate>
+            <Subject>Workout of the Day!</Subject>
             <div>
-                <label htmlFor="type-count">{type}</label>
-                <input 
+                <Label id="type-count">{type}</Label>
+                <Input
                     type="number" 
                     name="type-count" 
                     id="type-count" 
                     onChange={e => setTypeCount(isValidateCountNumber(e.target.value))}
-                    value={typeCount}/>
-                {type === "For Time of" ? "Round" : "Minute"}
+                    value={typeCount} />
+                <span>{type === "For Time of" ? "Round" : "Minute"}</span>
             </div>
             {
                 isTeam && 
                         <div>
-                            <label htmlFor="team-of">Team of </label>
+                            <Label htmlFor="team-of">Team of </Label>
                             <button onClick={e => setTeamOf(2)}><HiUsers/></button>
                             <button onClick={e => setTeamOf(3)}><HiUserGroup/></button>
                         </div>
             }
             <div>
-                <label htmlFor="level">난이도</label>
+                <Label htmlFor="level">난이도</Label>
                 <select id="level" name="level" onChange={e => setLevel(e.target.value)} value={level}>
                     <option value="rxd" defaultValue>Rx'd</option>
                     <option value="a">A</option>
                     <option value="b">B</option>
                 </select>
                 {/* 운동 종류 및 체크 단위부터 시작 */}
-                { Array.from(movements).map((el, index) =>  <StyledMovementBox key={index}> 
-                                                                <h4>{el[1].name}</h4>
+                { Array.from(movements).map((el, index) =>  <MovementCard key={index} name={el[1].name} edit={true}> 
                                                                 <div>
-                                                                    <label htmlFor={`${el[1].id}-goal`}>Goal</label>
                                                                     <input 
                                                                         type="number" 
                                                                         name={el[1].id} 
@@ -151,7 +145,7 @@ const WodCard = ({ data, insertWod }) => {
                                                                 {
                                                                     el[1].weight &&
                                                                         <div>
-                                                                            <label htmlFor={`${el[1].id}-weight`}>Weight</label>
+                                                                            <Label htmlFor={`${el[1].id}-weight`}>Weight</Label>
                                                                             <input 
                                                                                 type="number" 
                                                                                 name={el[1].id} 
@@ -170,7 +164,7 @@ const WodCard = ({ data, insertWod }) => {
                                                                             </select>
                                                                         </div>
                                                                 }
-                                                            </StyledMovementBox>
+                                                            </MovementCard>
                 )}
                 <div>
                     {
@@ -178,11 +172,11 @@ const WodCard = ({ data, insertWod }) => {
                             <p>Did you go the distance?</p>
                             <div>
                                 <input type="radio" name="complete" id="yes" value="yes" checked={complete === "yes"} onChange={e => setComplete(e.target.value)}/>
-                                <label htmlFor="yes">Yes</label>
+                                <Label htmlFor="yes">Yes</Label>
                             </div>
                             <div>
                                 <input type="radio" name="complete" id="no" value="no" checked={complete === "no"} onChange={e => setComplete(e.target.value)}/>
-                                <label htmlFor="no">No</label>
+                                <Label htmlFor="no">No</Label>
                             </div>
                         </>
                     }
@@ -205,7 +199,7 @@ const WodCard = ({ data, insertWod }) => {
                 </div>
             </div>
             <Button onClick={createMovementData}>등록</Button>
-        </StyledWodCard>
+        </WodCardTemplate>
     );
 }
 

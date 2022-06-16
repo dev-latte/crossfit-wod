@@ -5,6 +5,8 @@ import { isNull } from "../apis/IsValidation";
 import WodCard from "../components/Template/WodCard";
 import Button from "../components/UI/Button";
 import Checkbox from "../components/UI/Checkbox";
+import Label from "../components/UI/Label";
+import Subject from "../components/UI/Subject";
 
 const MovementsTemplate = styledComponents.div`
     display: flex;
@@ -24,11 +26,13 @@ const CategoryContainer = styledComponents.div`
     width: 100%;
     margin: 10px 0px;
     padding: 5px;
-    >span {
-        font-family: 'Orbitron', sans-serif;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
+`;
+
+const CheckboxContainer = styledComponents.div`
+    display: flex;
+    align-items: center;
+    border-radius : 6px;
+    margin: 1px;
 `;
 
 const CreateWodCard = () => {
@@ -108,23 +112,31 @@ const CreateWodCard = () => {
     return (
         <>
             <CategoryContainer>
-                <span>Today is...</span>
+                <Subject>Today is...</Subject>
                 <select id="type" name="type" onChange={e => setType(e.target.value)} value={type}>
                     <option value="ft" defaultValue>For Time of</option>
-                        <option value="amrap">AMRAP</option>
+                    <option value="amrap">AMRAP</option>
                     <option value="crosfit-total">Crossfit Total</option>
                 </select>
             </CategoryContainer>
             <CategoryContainer>
-                <span>Team of</span>
-                <Checkbox type="checkbox" key={0} el={{name: "team", id: "team"}} onChange={e => setIsTeam(e.target.checked)} checked={isTeam}/>
+                <Subject>Team of</Subject>
+                <CheckboxContainer>
+                    <Checkbox type="checkbox" el={{name: "team", id: "team"}} onChange={e => setIsTeam(e.target.checked)} checked={isTeam}/>
+                    <Label htmlFor="team">Team</Label>
+                </CheckboxContainer>
             </CategoryContainer>
             <CategoryContainer>
-                <span>Movements</span>
+                <Subject>Movements</Subject>
                 <MovementsTemplate>
                     {
                         setMovementList.length !== 0 
-                            && movementList.map((el, index) => <Checkbox type="checkbox" key={index} el={el} onChange={onCheckedMovement} checked={selectMovements.has(el.id)}/>)
+                            && movementList.map((el, index) =>
+                            <CheckboxContainer key={index}>
+                                <Checkbox type="checkbox" el={el} onChange={onCheckedMovement} checked={selectMovements.has(el.id)} />
+                                <Label htmlFor={el.id}>{el.name}</Label>
+                            </CheckboxContainer>
+                        )
                     }
                 </MovementsTemplate>
             </CategoryContainer>
