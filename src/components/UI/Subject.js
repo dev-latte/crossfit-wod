@@ -1,15 +1,18 @@
 import React from "react";
 import styledComponents from "styled-components";
 
-const StyledSpan = styledComponents.span`
+const StyledSubject = styledComponents.p`
     font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Subject = ({ children }) => {
     return (
-        <StyledSpan>{children}</StyledSpan>
+        <StyledSubject>{children}</StyledSubject>
     )   
 }
 

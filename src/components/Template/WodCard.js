@@ -6,7 +6,6 @@ import { HiUsers, HiUserGroup } from "react-icons/hi"
 import { isNull, isValidateCountNumber } from "../../apis/IsValidation";
 import Input from "../UI/Input";
 import Label from "../UI/Label";
-import Subject from "../UI/Subject";
 import WodCardTemplate from "./WodCardTemplate";
 import MovementCard from "./MovementsCard";
 
@@ -91,14 +90,11 @@ const WodCard = ({ data, insertWod }) => {
         insertWod(data);
     }
 
-
-
     // Crossfit Total 같은 경우는 다른 방식으로 카드를 보여줄 예정, 지금은 신경쓰지 않기
     return (
-        <WodCardTemplate>
-            <Subject>Workout of the Day!</Subject>
+        <WodCardTemplate title="Workout of the Day!">
             <div>
-                <Label id="type-count">{type}</Label>
+                <Label htmlFor="type-count">{type}</Label>
                 <Input
                     type="number" 
                     name="type-count" 
@@ -108,7 +104,7 @@ const WodCard = ({ data, insertWod }) => {
                 <span>{type === "For Time of" ? "Round" : "Minute"}</span>
             </div>
             {
-                isTeam && 
+                isTeam &&
                         <div>
                             <Label htmlFor="team-of">Team of </Label>
                             <button onClick={e => setTeamOf(2)}><HiUsers/></button>
@@ -125,6 +121,7 @@ const WodCard = ({ data, insertWod }) => {
                 {/* 운동 종류 및 체크 단위부터 시작 */}
                 { Array.from(movements).map((el, index) =>  <MovementCard key={index} name={el[1].name} edit={true}> 
                                                                 <div>
+                                                                    <Label htmlFor={`${el[1].id}-goal`}>count</Label>
                                                                     <input 
                                                                         type="number" 
                                                                         name={el[1].id} 

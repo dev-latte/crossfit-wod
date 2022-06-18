@@ -1,12 +1,15 @@
 import React from "react";
 import styledComponents from "styled-components";
 import Button from "../UI/Button";
+import Subject from "../UI/Subject";
+
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 
 const CardTemplateContainer = styledComponents.div`
     width: 400px;
     height: auto;
     border: 1px solid black;
+    text-align: center;
 `;
 
 const CardTemplateHeader = styledComponents.div`
@@ -21,16 +24,17 @@ const CardTemplateBody = styledComponents.div`
     width: 100%;
     height: auto;
     border: 1px solid salmon;
-    padding: 0px 10px;
+    padding: 10px;
 `;
 
-const WodCardTemplate = ({ type, children, onClickDelete }) => {
+const WodCardTemplate = ({ type, title, children, onClickDelete }) => {
     return (
         <CardTemplateContainer>
             <CardTemplateHeader>
                 {type === "record" && <Button width="30px"><AiFillEdit /></Button>}
                 <Button width="30px" onClick={onClickDelete}><AiFillDelete/></Button>
             </CardTemplateHeader>
+            <Subject>{title}</Subject>
             <CardTemplateBody>
                 {children}
             </CardTemplateBody>

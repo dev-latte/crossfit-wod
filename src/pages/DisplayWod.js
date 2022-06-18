@@ -41,7 +41,7 @@ const DisplayWod = () => {
         <TemplateDiv>
             {
                 todayWodData 
-                    ? <CompletedWodCard wodData={todayWodData} deleteData={deleteWodData}/>
+                    ? <CompletedWodCard wodData={todayWodData} deleteData={deleteWodData} />
                     : <CreateWodCard/>
             }
         </TemplateDiv>
