@@ -1,18 +1,17 @@
 import React from "react";
 import styledComponents from "styled-components";
 
-const InputContainser = styledComponents.div`
-    // border: 1px solid black;
+const StyledInput = styledComponents.input`
     display: inline-block;
     vertical-align: middle;
     padding: 2px;
+    width: ${(props) => props.width || "50px"};
+    margin: 0px 5px;
 `;
 
-const Input = ({ label, type, name, id, onChange, value }) => {
+const Input = ({ type, name, id, onChange, value, width }) => {
     return (
-        <InputContainser>
-            <input type={type} name={name} id={id} onChange={onChange} value={value} />
-        </InputContainser>
+        <StyledInput type={type} name={name} id={id} onChange={onChange} value={value} width={width} />
     );
 }
 

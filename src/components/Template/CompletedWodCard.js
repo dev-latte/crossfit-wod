@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import styledComponents from "styled-components";
 import MovementCard from "./MovementsCard";
 import WodCardTemplate from "./WodCardTemplate";
@@ -37,21 +38,22 @@ const MovementsList = styledComponents.div`
 const CompletedWodCard = ({ wodData, deleteData }) => {
     const { type, count, complete, movements, level, record, teamOf } = wodData;
     const movementKey = Object.keys(movements);
-    
-    console.log(record);
+    const [edit, setEdit] = useState(false);
+
+    console.log(wodData);
 
     return (
-        <WodCardTemplate type="record" onClickDelete={deleteData} title={complete ? "WOD CLEAR!" : "WOD FAILED"}>
+        <WodCardTemplate type="record" onClickDelete={deleteData} title={complete ? "WOD CLEAR!" : "WOD FAILED"} edit={edit} setEdit={setEdit} >
             <InformationWod>
                 <div>
                     <p>{type}</p>
                 </div>
-                { teamOf &&
+                {teamOf &&
                     <div>
                         <span>Team of </span>
                         <p>{teamOf}</p>
                         <span> 의 구성으로</span>
-                    </div>     
+                    </div>
                 }
                 <div>
                     <p>{count}</p>
@@ -67,11 +69,13 @@ const CompletedWodCard = ({ wodData, deleteData }) => {
                 <p>{movementKey.length}개의 수행한 운동 (scaling : {level === "rxd" ? "Rx'd" : level.toUpperCase()})</p>
                 {
                     movementKey.map((el, index) =>
-                        <MovementCard 
-                            key={index} 
-                            name={el.split("-").map(el => el.replace(el[0], char => char.toUpperCase())).join(" ")} 
-                            goal={`${movements[el]["goal"]}${movements[el]["goal-unit"]}`}
-                            weight={movements[el]["weight"] ? `${movements[el]["weight"]}${movements[el]["weight-unit"]}` : ""}
+                        <MovementCard
+                            key={index}
+                            edit={edit}
+                            el={[el, movements[el]]}
+                            movementData={movements}
+                            // 와드 수정부터 진행. 현재 와드 값 셋팅 후 > DB에 저장할 형식으로 변경하는 방식을 취하고있지만... 애매해서 조금 고민해봐야할듯.
+                            // 데이터 형식 통일 후, 템플릿을 이용할 수 있도록 변경 요망
                         />
                     )
                 }
