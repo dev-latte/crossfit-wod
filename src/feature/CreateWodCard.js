@@ -141,6 +141,7 @@ const CreateWodCard = () => {
                 </MovementsTemplate>
             </CategoryContainer>
             <Button onClick={createWodCard}>Create WOD CARD!</Button>
+            {/* 첫 페이지의 선택 항목들 */}
             { wodData && <WodCard data={wodData} insertWod={insertWod}/> }
         </>
     );

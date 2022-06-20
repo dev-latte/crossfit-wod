@@ -44,29 +44,24 @@ const WodCard = ({ data, insertWod }) => {
     const [teamOf, setTeamOf] = useState(false);
     const [typeCount, setTypeCount] = useState("");
     const [level, setLevel] = useState("rxd");
-    const [movementData, setMovementData] = useState(new Map());
+    
+    const map = new Map();
+    let i = 0;
+    movements.forEach((value, key) => {
+        i++;
+        map.set(key, {
+            index: i,
+            goal: "",
+            "goal-unit": value.unit[0],
+            weight: false,
+            "weight-unit": "lb"
+        })
+    });
+    
+    const [movementData, setMovementData] = useState(map);
     const [recordData, setRecordData] = useState("");
     const [complete, setComplete] = useState("");
     const [btnClicked, setBtnClicked] = useState("users");
-
-
-    useLayoutEffect(() => {
-        setDefaultMovementData();
-    }, []);
-
-    const setDefaultMovementData = () => {
-        let i = 0;
-        movements.forEach((value, key) => {
-            i++;
-            setMovementData.set(key, {
-                index: i,
-                goal: "",
-                "goal-unit": value.unit[0],
-                weight: false,
-                "weight-unit": "lb"
-            })
-        });
-    }
 
     const onChangeRecord = (e) => {
         const target = e.target.name;
@@ -150,7 +145,9 @@ const WodCard = ({ data, insertWod }) => {
                     <option value="b">B</option>
                 </select>
                 {/* 운동 종류 및 체크 단위부터 시작 */}
-                <MovementsList movements={movements} edit={true} movementData={movementData} setMovementData={setMovementData} />
+                { movementData.size !== 0
+                    && <MovementsList movements={movements} edit={true} movementData={movementData} setMovementData={setMovementData} />
+                }
 
                 <div>
                     {

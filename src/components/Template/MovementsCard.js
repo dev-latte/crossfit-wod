@@ -43,6 +43,8 @@ const MovementCard = ({ edit, el, movementData, setMovementData }) => {
     const key = el[0];
     const value = el[1];
 
+    console.log(movementData);
+
     const onChangeMovementData = (e) => {
         const key = e.target.name;
         const target = e.target.id;
