@@ -7,7 +7,9 @@ import { isNull, isValidateCountNumber } from "../../apis/IsValidation";
 import Input from "../UI/Input";
 import Label from "../UI/Label";
 import WodCardTemplate from "./WodCardTemplate";
-import MovementCard from "./MovementsCard";
+import MovementsList from "./MovementsList";
+import { mapToObject } from "../../apis/FirebaseInstance";
+import { useLayoutEffect } from "react";
 
 
 const StyledTeamCategories = styledComponents.div`
@@ -42,22 +44,29 @@ const WodCard = ({ data, insertWod }) => {
     const [teamOf, setTeamOf] = useState(false);
     const [typeCount, setTypeCount] = useState("");
     const [level, setLevel] = useState("rxd");
-
-    const movementDataDefault = {};
-    movements.forEach((value, key) => movementDataDefault[key] = {
-        goal: "",
-        "goal-unit": value.unit[0],
-        weight: false,
-        "weight-unit": "lb"
-    });
-
-    const [movementData, setMovementData] = useState(movementDataDefault);
+    const [movementData, setMovementData] = useState(new Map());
     const [recordData, setRecordData] = useState("");
     const [complete, setComplete] = useState("");
     const [btnClicked, setBtnClicked] = useState("users");
 
 
+    useLayoutEffect(() => {
+        setDefaultMovementData();
+    }, []);
 
+    const setDefaultMovementData = () => {
+        let i = 0;
+        movements.forEach((value, key) => {
+            i++;
+            setMovementData.set(key, {
+                index: i,
+                goal: "",
+                "goal-unit": value.unit[0],
+                weight: false,
+                "weight-unit": "lb"
+            })
+        });
+    }
 
     const onChangeRecord = (e) => {
         const target = e.target.name;
@@ -87,10 +96,12 @@ const WodCard = ({ data, insertWod }) => {
             teamOf,
             level,
             complete,
-            movements: movementData,
+            movements: Object.fromEntries(movementData),
             record,
             deleted: false
         }
+
+        console.log(data);
 
         // CreateWodCard.js 에 있는 함수
         insertWod(data);
@@ -139,15 +150,7 @@ const WodCard = ({ data, insertWod }) => {
                     <option value="b">B</option>
                 </select>
                 {/* 운동 종류 및 체크 단위부터 시작 */}
-                {Array.from(movements).map((el, index) =>
-                    <MovementCard
-                        key={index}
-                        name={el[1].name}
-                        edit={true}
-                        el={el}
-                        movementData={movementData}
-                        setMovementData={setMovementData}
-                    />)}
+                <MovementsList movements={movements} edit={true} movementData={movementData} setMovementData={setMovementData} />
 
                 <div>
                     {

@@ -42,7 +42,6 @@ const MovementList = styledComponents.ul`
 const MovementCard = ({ edit, el, movementData, setMovementData }) => {
     const key = el[0];
     const value = el[1];
-    console.log("el> ", el, "move> ",movementData);
 
     const onChangeMovementData = (e) => {
         const key = e.target.name;
@@ -60,8 +59,9 @@ const MovementCard = ({ edit, el, movementData, setMovementData }) => {
         }
 
         let result = isNaN(e.target.value) ? e.target.value : isValidateCountNumber(e.target.value);
+        const data = new Map(movementData);
+        data.set(key, {...(data.get(key)), [inputKey]: result});
 
-        const data = { ...movementData, [key]: { ...movementData[key], [inputKey]: result } };
         setMovementData(data);
     }
 
@@ -84,13 +84,13 @@ const MovementCard = ({ edit, el, movementData, setMovementData }) => {
                                     min={1}
                                     width="auto"
                                     onChange={onChangeMovementData}
-                                    defaultValue={movementData ? movementData[key]["goal"] : ""}
+                                    defaultValue={movementData ? movementData.get(key)["goal"] : ""}
                                 />
                                 <select
                                     name={key}
                                     id={`${key}-goal-unit`}
                                     onChange={onChangeMovementData}
-                                    defaultValue={movementData ? movementData[key]["goal-unit"] : ""}
+                                    defaultValue={movementData ? movementData.get(key)["goal-unit"] : ""}
                                 >
                                     { value.unit.map((el, index) => <option key={index} value={el}>{el}</option>)}
                                 </select>
@@ -113,13 +113,13 @@ const MovementCard = ({ edit, el, movementData, setMovementData }) => {
                                             name={key}
                                             id={`${key}-weight`}
                                             onChange={onChangeMovementData}
-                                            defaultValue={movementData ? movementData[key]["weight"] : 1}
+                                            defaultValue={movementData ? movementData.get(key)["weight"] : 1}
                                         />
                                         <select
                                             name={key}
                                             id={`${key}-weight-unit`}
                                             onChange={onChangeMovementData}
-                                            defaultValue={movementData ? movementData[key]["weight-unit"] : ""}
+                                            defaultValue={movementData ? movementData.get(key)["weight-unit"] : ""}
                                         >
                                             <option value="lb" name="lb">lb</option>
                                             <option value="kg" name="kg">kg</option>

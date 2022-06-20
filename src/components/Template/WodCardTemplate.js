@@ -31,7 +31,7 @@ const WodCardTemplate = ({ type, title, children, onClickDelete, edit, setEdit }
     return (
         <CardTemplateContainer>
             <CardTemplateHeader>
-                {type === "record" && <Button width="30px" onClick={e => setEdit(!edit)}><AiFillEdit /></Button>}
+                {type === "record" && <Button width="30px" onClick={(e) => setEdit(!edit)}><AiFillEdit /></Button>}
                 <Button width="30px" onClick={onClickDelete}><AiFillDelete/></Button>
             </CardTemplateHeader>
             <Subject>{title}</Subject>
