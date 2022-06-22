@@ -14,19 +14,20 @@ const MovementListTemplate = styled.div`
     }
 `;
 
-const MovementsList = ({ movements, edit, movementData, setMovementData }) => {
-    // console.log(movements);
+const MovementsList = ({ movements, edit, movementRecord, setMovementRecord }) => {
+    console.log(movementRecord);
+
     return (
         <MovementListTemplate>
-            {Array.from(movements).map((el, index) =>
+            { movements.map((el, index) =>
                 <MovementCard
                     key={index}
-                    name={el[1].name}
                     edit={edit}
                     el={el}
-                    movementData={movementData}
-                    setMovementData={setMovementData}
-                />)}
+                    movementRecord={movementRecord}
+                    setMovementRecord={setMovementRecord}
+                />
+            )}
         </MovementListTemplate>
     );
 

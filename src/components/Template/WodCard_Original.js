@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styledComponents from "styled-components";
 import Button from "../UI/Button";
 
 import { HiUsers, HiUserGroup } from "react-icons/hi"
@@ -9,11 +10,9 @@ import WodCardTemplate from "./WodCardTemplate";
 import MovementsList from "./MovementsList";
 import { mapToObject } from "../../apis/FirebaseInstance";
 import { useLayoutEffect } from "react";
-import styled from "styled-components";
-import { useEffect } from "react";
 
 
-const TeamCategoriesWrapper = styled.div`
+const StyledTeamCategories = styledComponents.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,42 +39,78 @@ const TeamCategoriesWrapper = styled.div`
 
 
 
-const WodCard = ({ wodData }) => {
-    const { type, isTeam, movements } = wodData;
-    const [typeCount, setTypeCount] = useState("");
+const WodCard = ({ data, insertWod }) => {
+    const { type, isTeam, movements } = data;
     const [teamOf, setTeamOf] = useState(false);
+    const [typeCount, setTypeCount] = useState("");
     const [level, setLevel] = useState("rxd");
+    
+    const map = new Map();
+    let i = 0;
+    movements.forEach((value, key) => {
+        i++;
+        map.set(key, {
+            index: i,
+            goal: "",
+            "goal-unit": value.unit[0],
+            weight: false,
+            "weight-unit": "lb"
+        })
+    });
+    
+    const [movementData, setMovementData] = useState(map); // record
+    const [recordData, setRecordData] = useState("");
+    const [complete, setComplete] = useState("");
     const [btnClicked, setBtnClicked] = useState("users");
-    const [movementRecord, setMovementRecord] = useState();
+
+    const onChangeRecord = (e) => {
+        const target = e.target.name;
+        const value = e.target.value;
+
+        if (target === "minutes") {
+            setRecordData({ ...recordData, min: value });
+            return;
+        }
+
+        // 초의 경우 60초를 넘는 입력은 불가하도록 추가
+        if (target === "second") {
+            setRecordData({ ...recordData, sec: value });
+            return;
+        }
+
+        setRecordData(value);
+    }
+
+    const createMovementData = (e) => {
+        const count = `${typeCount} ${type === "For Time of" ? "Round" : "Minute"}`;
+        const record = !isNull(recordData.min) ? `${recordData.min}:${recordData.sec}` : recordData;
+
+        const data = {
+            type,
+            count,
+            teamOf,
+            level,
+            complete,
+            movements: Object.fromEntries(movementData),
+            record,
+            deleted: false
+        }
+
+        console.log(data);
+
+        // CreateWodCard.js 에 있는 함수
+        insertWod(data);
+    }
 
 
-    // movementRecord에 값이 
-    // useEffect(() => {
-    //     console.log(movements);
-    //     const map = new Map();
-    //     movements.forEach((el, index) => {
-    //         const key = el.id;
-    //         map.set(key, {
-    //             index,
-    //             goal: "",
-    //             "goal-unit": el.unit[0],
-    //             weight: false,
-    //             "weight-unit": "lb"
-    //         });
-    //     });
-    //     setMovementRecord(map);
-    // }, [movements]);
-
-
-    const onClickTeam = (e) => {
+    const checkedButton = (e) => {
         const userType = e.currentTarget.dataset.team;
         const userCount = userType === "users" ? 2 : 3;
         setBtnClicked(userType);
         setTeamOf(userCount);
     }
 
-    console.log(movementRecord);
-
+    // Crossfit Total 같은 경우는 다른 방식으로 카드를 보여줄 예정, 지금은 신경쓰지 않기
     return (
         <WodCardTemplate title="Workout of the Day!">
             <div>
@@ -90,17 +125,17 @@ const WodCard = ({ wodData }) => {
             </div>
             {
                 isTeam &&
-                <TeamCategoriesWrapper>
+                <StyledTeamCategories>
                     <Label>Team of</Label>
                     <ul>
-                        <li onClick={onClickTeam} data-team="users" className={btnClicked === "users" ? "clicked" : ""}>
+                        <li onClick={checkedButton} data-team="users" className={btnClicked === "users" ? "clicked" : ""}>
                             <HiUsers />
                         </li>
-                        <li onClick={onClickTeam} data-team="group" className={btnClicked === "group" ? "clicked" : ""}>
+                        <li onClick={checkedButton} data-team="group" className={btnClicked === "group" ? "clicked" : ""}>
                             <HiUserGroup />
                         </li>
                     </ul>
-                </TeamCategoriesWrapper>
+                </StyledTeamCategories>
             }
             <div>
                 <Label htmlFor="level">난이도</Label>
@@ -110,11 +145,11 @@ const WodCard = ({ wodData }) => {
                     <option value="b">B</option>
                 </select>
                 {/* 운동 종류 및 체크 단위부터 시작 */}
-                { movements.size !== 0
-                    && <MovementsList movements={movements} edit={true} movementRecord={movementRecord} setMovementRecord={setMovementRecord}/>
+                { movementData.size !== 0
+                    && <MovementsList movements={movements} edit={true} movementData={movementData} setMovementData={setMovementData} />
                 }
 
-                {/* <div>
+                <div>
                     {
                         <>
                             <p>Did you go the distance?</p>
@@ -144,9 +179,9 @@ const WodCard = ({ wodData }) => {
                         complete === "no"
                         && <input type="text" name="result" id="result" onChange={onChangeRecord} />
                     }
-                </div> */}
+                </div>
             </div>
-
+            <Button onClick={createMovementData}>등록</Button>
         </WodCardTemplate>
     );
 }

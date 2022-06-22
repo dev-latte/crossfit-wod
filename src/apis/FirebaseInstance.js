@@ -27,10 +27,10 @@ export const insertData = async (table, document, data) => {
 }
 
 export const selectWodDataFromDate = async (table, document, setWodCard) => {
-  console.log('select');
   const docRef = doc(database, table, document);
   await getDoc(docRef)
     .then(response => {
+      console.log(response.data())
       if (response.exists() && !(response.data().deleted)) {
         setWodCard(response.data());
       }

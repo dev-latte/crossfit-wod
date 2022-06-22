@@ -4,8 +4,9 @@ import { isValidateCountNumber } from "../../apis/IsValidation";
 import Input from "../UI/Input";
 import Label from "../UI/Label";
 import Subject from "../UI/Subject";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
-const StyledMovementCard = styledComponents.div`
+const MovementCardContainer = styledComponents.div`
     background-color: #C77B7F;
     border-radius: 10px;;
     padding: 5px 10px;        
@@ -15,17 +16,26 @@ const StyledMovementCard = styledComponents.div`
     }
 `;
 
-const MovementTitleContainder = styledComponents.div`
+const MovementTitleWrapper = styledComponents.div`
     padding: 3px 0px;
     text-align: left;
     border-bottom: 1.5px solid #fff;
     color: #fff;
-    >p{ 
-        font-size: 15px;
+    >div{
+        display: flex;
+        justify-content: space-between; 
+        >p{ 
+            font-size: 15px;
+        }
+        > svg{
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
     }
 `;
 
-const MovementList = styledComponents.ul`
+const MovementWrapper = styledComponents.ul`
     text-align: left;
     padding: 5px 0px 0px 15px;
     color: #fff;
@@ -39,12 +49,13 @@ const MovementList = styledComponents.ul`
     }
 `;
 
-const MovementCard = ({ edit, el, movementData, setMovementData }) => {
-    const key = el[0];
-    const value = el[1];
+const MovementCard = ({ edit, el, movementRecord, setMovementRecord }) => {
+    const key = el.id;
 
-    console.log(movementData);
+    console.log(movementRecord);
 
+
+    // 여기부터 수정하기
     const onChangeMovementData = (e) => {
         const key = e.target.name;
         const target = e.target.id;
@@ -61,18 +72,21 @@ const MovementCard = ({ edit, el, movementData, setMovementData }) => {
         }
 
         let result = isNaN(e.target.value) ? e.target.value : isValidateCountNumber(e.target.value);
-        const data = new Map(movementData);
+        const data = new Map(movementRecord);
         data.set(key, {...(data.get(key)), [inputKey]: result});
 
-        setMovementData(data);
+        setMovementRecord(data);
     }
 
     return (
-        <StyledMovementCard>
-            <MovementTitleContainder>
-                <Subject>{key.split("-").map(el => el.replace(el[0], char => char.toUpperCase())).join(" ")}</Subject>
-            </MovementTitleContainder>
-            <MovementList>
+        <MovementCardContainer>
+            <MovementTitleWrapper>
+                    <div>
+                        <Subject>{key.split("-").map(el => el.replace(el[0], char => char.toUpperCase())).join(" ")}</Subject>
+                        <IoMdCloseCircleOutline onClick={e => console.log("delete")}/>
+                    </div>
+            </MovementTitleWrapper>
+             <MovementWrapper>
                 <li>
                     <Label>목표 : </Label>
                     {
@@ -86,56 +100,55 @@ const MovementCard = ({ edit, el, movementData, setMovementData }) => {
                                     min={1}
                                     width="auto"
                                     onChange={onChangeMovementData}
-                                    defaultValue={movementData ? movementData.get(key)["goal"] : ""}
+                                    defaultValue={movementRecord ? movementRecord.get(key)["goal"] : ""}
                                 />
                                 <select
                                     name={key}
                                     id={`${key}-goal-unit`}
                                     onChange={onChangeMovementData}
-                                    defaultValue={movementData ? movementData.get(key)["goal-unit"] : ""}
+                                    defaultValue={movementRecord ? movementRecord.get(key)["goal-unit"] : ""}
                                 >
-                                    { value.unit.map((el, index) => <option key={index} value={el}>{el}</option>)}
+                                    { el.unit.map((el, index) => <option key={index} value={el}>{el}</option>)}
                                 </select>
                             </div>
                             :
-                            <span>{`${value.goal} ${value["goal-unit"]}`}</span>
+                            <span>{`${el.goal} ${el["goal-unit"]}`}</span>
                     }
                 </li>
                 {
-                    el && value.weight &&
+                    el?.weight &&
                     <li>
                         <Label htmlFor={el ? `${key}-weight` : "weight"}>무게 : </Label>
                         {edit ?
                             <div>
                                 {
-                                    el[1].weight &&
+                                    el.weight &&
                                     <div>
                                         <Input
                                             type="number"
                                             name={key}
                                             id={`${key}-weight`}
                                             onChange={onChangeMovementData}
-                                            defaultValue={movementData ? movementData.get(key)["weight"] : 1}
+                                            defaultValue={movementRecord ? movementRecord.get(key)["weight"] : 1}
                                         />
                                         <select
                                             name={key}
                                             id={`${key}-weight-unit`}
                                             onChange={onChangeMovementData}
-                                            defaultValue={movementData ? movementData.get(key)["weight-unit"] : ""}
+                                            defaultValue={movementRecord ? movementRecord.get(key)["weight-unit"] : ""}
                                         >
                                             <option value="lb" name="lb">lb</option>
                                             <option value="kg" name="kg">kg</option>
                                         </select>
                                     </div>
                                 }
-
                             </div>
-                            : <span>{`${value.weight} ${value["weight-unit"]}`}</span>
+                            : <span>{`${el.weight} ${el["weight-unit"]}`}</span>
                         }
                     </li>
                 }
-            </MovementList>
-        </StyledMovementCard>
+            </MovementWrapper>
+        </MovementCardContainer>
     );
 }
 
