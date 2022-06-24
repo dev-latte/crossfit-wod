@@ -4,6 +4,7 @@ import MovementCard from "./MovementsCard";
 
 const MovementListTemplate = styled.div`
     padding-bottom: 10px;
+    margin-top: 10px;
     >p{
         color: #fff;
         font-weight: 700;
@@ -14,9 +15,7 @@ const MovementListTemplate = styled.div`
     }
 `;
 
-const MovementsList = ({ movements, edit, movementRecord, setMovementRecord }) => {
-    console.log(movementRecord);
-
+const MovementsList = ({ movements, edit, movementRecord, setMovementRecord, onClickRemove }) => {
     return (
         <MovementListTemplate>
             { movements.map((el, index) =>
@@ -26,6 +25,7 @@ const MovementsList = ({ movements, edit, movementRecord, setMovementRecord }) =
                     el={el}
                     movementRecord={movementRecord}
                     setMovementRecord={setMovementRecord}
+                    onClickRemove={onClickRemove}
                 />
             )}
         </MovementListTemplate>

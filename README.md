@@ -39,3 +39,29 @@
  ㅡㅡ data  
  ㅡㅡ feature  
  ㅡㅡ pages  
+
+
+
+┌── public              
+│   ├── assets
+│   │   └── bg
+│   │   └── logo
+│   │   └── ui
+├── specification       - 개발하는 기ㅇㅔ 대한 설명서
+├── src
+│   ├── apis
+│   ├── components                   
+│   │   └── atoms       - 제일 작은 단위     		   		
+│   │   └── molecules   - atom으로 구성된 단위
+│   │   └── organisms   - molecule로 구성된 단위
+│   │   └── templates   - organism으로 구성된 단위
+│   ├── data            - 데이터
+│   ├── pages           - template로 구성된 결과 페이지
+└───└── utils
+├── App.js
+├── index.js
+├── AppRouter.js
+├── .env
+├── .env.production
+├── .gitignore
+└── package.json

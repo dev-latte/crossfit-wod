@@ -1,13 +1,10 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, {useState } from "react";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 import styled from "styled-components";
-import { insertData, selectMovementData } from "../apis/FirebaseInstance";
-import { isNull } from "../apis/IsValidation";
-import WodCard from "../components/Template/WodCard_Original";
-import Button from "../components/UI/Button";
-import Checkbox from "../components/UI/Checkbox";
-import Label from "../components/UI/Label";
-import Subject from "../components/UI/Subject";
+import { isNull } from "../../apis/IsValidation";
+import Subject from "../atoms/Subject";
+import Checkbox from "../atoms/Checkbox";
+import Label from "../atoms/Label";
 
 const CreateWodContainer = styled.div`
     width: calc(100% - 400px - 50px);
@@ -87,9 +84,8 @@ const CreateWodCard = ({ wodData, setWodData, movementList }) => {
         const movements = wodData["movements"];
         movements.push(movementList.filter(el => el.id === e.currentTarget.dataset.movement).pop());
         setWodData({ ...wodData, movements });
-
-        console.log(wodData);
     }
+
 
     // const onCheckedMovement = (e) => {
     //     const target = e.target.name;
@@ -143,6 +139,8 @@ const CreateWodCard = ({ wodData, setWodData, movementList }) => {
     //             setWodData();
     //         });
     // }
+
+    
 
     return (
         <CreateWodContainer>

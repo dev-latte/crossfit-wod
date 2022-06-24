@@ -1,10 +1,9 @@
 import React, { useLayoutEffect, useState } from "react";
 import styled from "styled-components";
-import { selectMovementData, selectWodDataFromDate, updateDeletedonWodData } from "../apis/FirebaseInstance";
-import CompletedWodCard from "../components/Template/CompletedWodCard";
-import WodCard1 from "../components/Template/WodCard";
-import Button from "../components/UI/Button";
-import CreateWodCard from "../feature/CreateWodCard";
+import { selectMovementData} from "../apis/FirebaseInstance";
+import Button from "../components/atoms/Button";
+import CreateWodCard from "../components/templates/CreateWodCard";
+import WodCard from "../components/templates/WodCard";
 
 const TemplateWodContents = styled.div`
     width: 1240px;
@@ -67,8 +66,6 @@ const DisplayWod = () => {
             .catch(err => alert(err));
     }
 
-
-
     const onToggleCard = (e) => {
         setAdmin(JSON.parse(e.currentTarget.dataset.admin));
     }
@@ -86,7 +83,7 @@ const DisplayWod = () => {
                     admin &&
                     <>
                         <CreateWodCard wodData={wodData} setWodData={setWodData} movementList={movementList}/>
-                        <WodCard1 wodData={wodData}/>
+                        <WodCard wodData={wodData} setWodData={setWodData}/>
                     </>
                 }
             </TemplateWodContents>

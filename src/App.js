@@ -1,5 +1,5 @@
 
-import DisplayWod from '../../pages/DisplayWod';
+import DisplayWod from './pages/DisplayWod';
 import './App.css';
 
 const App = () => {

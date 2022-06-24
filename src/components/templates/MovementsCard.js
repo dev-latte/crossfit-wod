@@ -1,9 +1,9 @@
 import React from "react";
 import styledComponents from "styled-components";
 import { isValidateCountNumber } from "../../apis/IsValidation";
-import Input from "../UI/Input";
-import Label from "../UI/Label";
-import Subject from "../UI/Subject";
+import Input from "../atoms/Input";
+import Label from "../atoms/Label";
+import Subject from "../atoms/Subject";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
 const MovementCardContainer = styledComponents.div`
@@ -49,7 +49,7 @@ const MovementWrapper = styledComponents.ul`
     }
 `;
 
-const MovementCard = ({ edit, el, movementRecord, setMovementRecord }) => {
+const MovementCard = ({ edit, el, movementRecord, setMovementRecord, onClickRemove }) => {
     const key = el.id;
 
     console.log(movementRecord);
@@ -83,7 +83,7 @@ const MovementCard = ({ edit, el, movementRecord, setMovementRecord }) => {
             <MovementTitleWrapper>
                     <div>
                         <Subject>{key.split("-").map(el => el.replace(el[0], char => char.toUpperCase())).join(" ")}</Subject>
-                        <IoMdCloseCircleOutline onClick={e => console.log("delete")}/>
+                        <IoMdCloseCircleOutline data-target={key} onClick={onClickRemove}/>
                     </div>
             </MovementTitleWrapper>
              <MovementWrapper>

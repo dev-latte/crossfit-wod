@@ -1,7 +1,7 @@
 import React from "react";
 import styledComponents from "styled-components";
-import Button from "../UI/Button";
-import Subject from "../UI/Subject";
+import Button from "../atoms/Button";
+import Subject from "../atoms/Subject";
 
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 

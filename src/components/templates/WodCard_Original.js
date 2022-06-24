@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styledComponents from "styled-components";
-import Button from "../UI/Button";
+import Button from "../atoms/Button";
 
 import { HiUsers, HiUserGroup } from "react-icons/hi"
 import { isNull, isValidateCountNumber } from "../../apis/IsValidation";

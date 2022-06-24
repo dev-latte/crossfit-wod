@@ -1,16 +1,14 @@
 import React, { useState } from "react";
-import Button from "../UI/Button";
+import { useEffect } from "react";
+import styled from "styled-components";
+
 
 import { HiUsers, HiUserGroup } from "react-icons/hi"
 import { isNull, isValidateCountNumber } from "../../apis/IsValidation";
-import Input from "../UI/Input";
-import Label from "../UI/Label";
+import Input from "../atoms/Input";
+import Label from "../atoms/Label";
 import WodCardTemplate from "./WodCardTemplate";
 import MovementsList from "./MovementsList";
-import { mapToObject } from "../../apis/FirebaseInstance";
-import { useLayoutEffect } from "react";
-import styled from "styled-components";
-import { useEffect } from "react";
 
 
 const TeamCategoriesWrapper = styled.div`
@@ -40,7 +38,7 @@ const TeamCategoriesWrapper = styled.div`
 
 
 
-const WodCard = ({ wodData }) => {
+const WodCard = ({ wodData, setWodData }) => {
     const { type, isTeam, movements } = wodData;
     const [typeCount, setTypeCount] = useState("");
     const [teamOf, setTeamOf] = useState(false);
@@ -48,7 +46,7 @@ const WodCard = ({ wodData }) => {
     const [btnClicked, setBtnClicked] = useState("users");
     const [movementRecord, setMovementRecord] = useState();
 
-
+    console.log(movements);
     // movementRecord에 값이 
     // useEffect(() => {
     //     console.log(movements);
@@ -75,6 +73,14 @@ const WodCard = ({ wodData }) => {
     }
 
     console.log(movementRecord);
+
+    const onClickRemove = (e) => {
+        const key = e.currentTarget.dataset.target;
+        const result = movements.filter(el => el.id !== key);
+        setWodData({...wodData, movements: result})
+    }
+
+
 
     return (
         <WodCardTemplate title="Workout of the Day!">
@@ -111,7 +117,7 @@ const WodCard = ({ wodData }) => {
                 </select>
                 {/* 운동 종류 및 체크 단위부터 시작 */}
                 { movements.size !== 0
-                    && <MovementsList movements={movements} edit={true} movementRecord={movementRecord} setMovementRecord={setMovementRecord}/>
+                    && <MovementsList movements={movements} edit={true} movementRecord={movementRecord} setMovementRecord={setMovementRecord} onClickRemove={onClickRemove}/>
                 }
 
                 {/* <div>
