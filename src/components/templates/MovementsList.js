@@ -15,17 +15,18 @@ const MovementListTemplate = styled.div`
     }
 `;
 
-const MovementsList = ({ movements, edit, movementRecord, setMovementRecord, onClickRemove }) => {
+const MovementsList = ({ movements, edit, onClickRemove, wodDataForm, setWodDataForm }) => {
     return (
         <MovementListTemplate>
             { movements.map((el, index) =>
                 <MovementCard
-                    key={index}
-                    edit={edit}
+                    key={`${el.id}-${index}`}
+                    index={index}
                     el={el}
-                    movementRecord={movementRecord}
-                    setMovementRecord={setMovementRecord}
+                    edit={edit}
                     onClickRemove={onClickRemove}
+                    wodDataForm={wodDataForm}
+                    setWodDataForm={setWodDataForm}
                 />
             )}
         </MovementListTemplate>

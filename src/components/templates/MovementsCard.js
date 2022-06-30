@@ -1,12 +1,12 @@
 import React from "react";
-import styledComponents from "styled-components";
 import { isValidateCountNumber } from "../../apis/IsValidation";
 import Input from "../atoms/Input";
 import Label from "../atoms/Label";
 import Subject from "../atoms/Subject";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import styled from "styled-components";
 
-const MovementCardContainer = styledComponents.div`
+const MovementCardContainer = styled.div`
     background-color: #C77B7F;
     border-radius: 10px;;
     padding: 5px 10px;        
@@ -16,7 +16,7 @@ const MovementCardContainer = styledComponents.div`
     }
 `;
 
-const MovementTitleWrapper = styledComponents.div`
+const MovementTitleWrapper = styled.div`
     padding: 3px 0px;
     text-align: left;
     border-bottom: 1.5px solid #fff;
@@ -35,7 +35,7 @@ const MovementTitleWrapper = styledComponents.div`
     }
 `;
 
-const MovementWrapper = styledComponents.ul`
+const MovementWrapper = styled.ul`
     text-align: left;
     padding: 5px 0px 0px 15px;
     color: #fff;
@@ -49,16 +49,17 @@ const MovementWrapper = styledComponents.ul`
     }
 `;
 
-const MovementCard = ({ edit, el, movementRecord, setMovementRecord, onClickRemove }) => {
+const MovementCard = ({ index, el, edit, onClickRemove, wodDataForm, setWodDataForm }) => {
     const key = el.id;
+    console.log(el, key);
 
-    console.log(movementRecord);
-
+    console.log("DataForm>>", wodDataForm);
 
     // 여기부터 수정하기
     const onChangeMovementData = (e) => {
         const key = e.target.name;
         const target = e.target.id;
+
 
         let inputKey;
         if (target.includes("goal-unit")) {
@@ -72,18 +73,23 @@ const MovementCard = ({ edit, el, movementRecord, setMovementRecord, onClickRemo
         }
 
         let result = isNaN(e.target.value) ? e.target.value : isValidateCountNumber(e.target.value);
-        const data = new Map(movementRecord);
-        data.set(key, {...(data.get(key)), [inputKey]: result});
+        const data = wodDataForm.movementInfo;
 
-        setMovementRecord(data);
+        console.log(key, target);
+        // data.push()
+        // data.set(key, {...(data.get(key)), [inputKey]: result});
+
+        // setMovementRecord(data);
     }
+
+    console.log(el);
 
     return (
         <MovementCardContainer>
             <MovementTitleWrapper>
                     <div>
                         <Subject>{key.split("-").map(el => el.replace(el[0], char => char.toUpperCase())).join(" ")}</Subject>
-                        <IoMdCloseCircleOutline data-target={key} onClick={onClickRemove}/>
+                        <IoMdCloseCircleOutline data-target={`${key}-${index}`} onClick={onClickRemove}/>
                     </div>
             </MovementTitleWrapper>
              <MovementWrapper>
@@ -99,16 +105,16 @@ const MovementCard = ({ edit, el, movementRecord, setMovementRecord, onClickRemo
                                     id={`${key}-goal`}
                                     min={1}
                                     width="auto"
-                                    onChange={onChangeMovementData}
-                                    defaultValue={movementRecord ? movementRecord.get(key)["goal"] : ""}
+                                    // onChange={onChangeMovementData}
+                                    // defaultValue={movementRecord ? movementRecord.get(key)["goal"] : ""}
                                 />
                                 <select
                                     name={key}
                                     id={`${key}-goal-unit`}
-                                    onChange={onChangeMovementData}
-                                    defaultValue={movementRecord ? movementRecord.get(key)["goal-unit"] : ""}
+                                    // onChange={onChangeMovementData}
+                                    // defaultValue={movementRecord ? movementRecord.get(key)["goal-unit"] : ""}
                                 >
-                                    { el.unit.map((el, index) => <option key={index} value={el}>{el}</option>)}
+                                    {/* { el.unit.map((el, index) => <option key={index} value={el}>{el}</option>)} */}
                                 </select>
                             </div>
                             :
@@ -128,14 +134,14 @@ const MovementCard = ({ edit, el, movementRecord, setMovementRecord, onClickRemo
                                             type="number"
                                             name={key}
                                             id={`${key}-weight`}
-                                            onChange={onChangeMovementData}
-                                            defaultValue={movementRecord ? movementRecord.get(key)["weight"] : 1}
+                                            // onChange={onChangeMovementData}
+                                            // defaultValue={movementRecord ? movementRecord.get(key)["weight"] : 1}
                                         />
                                         <select
                                             name={key}
                                             id={`${key}-weight-unit`}
-                                            onChange={onChangeMovementData}
-                                            defaultValue={movementRecord ? movementRecord.get(key)["weight-unit"] : ""}
+                                            // onChange={onChangeMovementData}
+                                            // defaultValue={movementRecord ? movementRecord.get(key)["weight-unit"] : ""}
                                         >
                                             <option value="lb" name="lb">lb</option>
                                             <option value="kg" name="kg">kg</option>

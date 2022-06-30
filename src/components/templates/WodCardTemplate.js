@@ -1,33 +1,42 @@
 import React from "react";
-import styledComponents from "styled-components";
+import styled from "styled-components";
 import Button from "../atoms/Button";
 import Subject from "../atoms/Subject";
 
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 
-const CardTemplateContainer = styledComponents.div`
+const CardTemplateContainer = styled.div`
     width: 400px;
     height: auto;
+    position: relative;
     border: 1px solid black;
     text-align: center;
 `;
 
-const CardTemplateHeader = styledComponents.div`
+const CardTemplateHeader = styled.div`
     width: 100%;
-    height: 27px;
+    height: 28px;
     border-bottom: 1px solid black;
     text-align: right;
-    // padding: 2px 10px;
 `;
 
-const CardTemplateBody = styledComponents.div`
+const CardTemplateBody = styled.div`
     width: 100%;
     height: auto;
     border: 1px solid salmon;
     padding: 10px;
 `;
 
-const WodCardTemplate = ({ type, title, children, onClickDelete, edit, setEdit }) => {
+const CardTemplateFotter = styled.div`
+    width: 100%;
+    height: auto;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    padding : 0 0 15px 0;
+`;
+
+const WodCardTemplate = ({ type, title, children, onClickDelete, edit, setEdit, onClick }) => {
     return (
         <CardTemplateContainer>
             <CardTemplateHeader>
@@ -38,6 +47,9 @@ const WodCardTemplate = ({ type, title, children, onClickDelete, edit, setEdit }
             <CardTemplateBody>
                 {children}
             </CardTemplateBody>
+            <CardTemplateFotter>
+                <Button onClick={onClick}>WOD 만들기!</Button>
+            </CardTemplateFotter>
         </CardTemplateContainer>
     );
 }

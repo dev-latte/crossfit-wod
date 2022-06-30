@@ -1,7 +1,6 @@
 import React, {useState } from "react";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 import styled from "styled-components";
-import { isNull } from "../../apis/IsValidation";
 import Subject from "../atoms/Subject";
 import Checkbox from "../atoms/Checkbox";
 import Label from "../atoms/Label";
@@ -61,10 +60,16 @@ const CheckboxWrapper = styled.div`
 `;
 
 // 관리자 페이지와 회원 페이지를 분리할 것
-const CreateWodCard = ({ wodData, setWodData, movementList }) => {
+const CreateWodCard = ({ wodData, setWodData, movementList, wodDataForm, setWodDataForm }) => {
     const [type, setType] = useState("ft");
     const [isTeam, setIsTeam] = useState(false);
 
+
+
+    // 같은 아이템 추가 가능
+    // 같은 아이템(운동)을 어떻게 구별 할 것인지에 대한 고민이 필요함 > 삭제 / 수정등에 사용될 예정
+    // 현재는 아이디나 index로 구별중임... 그치만 프론트에서 설정하는 것으로 유동적인 측면이 있어서 id로는 적합하지 않은듯?
+    // 데이터 수정 고려해보기
     const addWodData = (e) => {
         const id = e.target.id;
 
@@ -81,9 +86,21 @@ const CreateWodCard = ({ wodData, setWodData, movementList }) => {
             return;
         }
 
-        const movements = wodData["movements"];
-        movements.push(movementList.filter(el => el.id === e.currentTarget.dataset.movement).pop());
-        setWodData({ ...wodData, movements });
+        const movement = movementList.filter(el => el.id === e.currentTarget.dataset.movement).pop();
+        const list = wodData["movements"];
+        list.push(movement);
+        setWodData({ ...wodData, movements: list });
+
+        const movementInfo = wodDataForm.movementInfo;
+        const defaultMovementInfo = {
+            id: `${movement.id}-${movementInfo.length}`,
+            goal: "",
+            "goal-unit": movement.unit[0],
+            weight: movement.weight,
+            "weight-unit": "LB"
+        }
+        movementInfo.push(defaultMovementInfo);
+        setWodDataForm({...wodDataForm, movementInfo});
     }
 
 
@@ -149,7 +166,6 @@ const CreateWodCard = ({ wodData, setWodData, movementList }) => {
                 <select id="type" name="type" onChange={addWodData} value={type}>
                     <option value="ft" defaultValue>For Time of</option>
                     <option value="amrap">AMRAP</option>
-                    {/* <option value="crosfit-total">Crossfit Total</option> */}
                 </select>
             </CategoryWrapper>
             <CategoryWrapper>
@@ -170,10 +186,6 @@ const CreateWodCard = ({ wodData, setWodData, movementList }) => {
                     }
                 </MovementsWrapper>
             </CategoryWrapper>
-            
-            {/* <Button onClick={createWodCard}>Create WOD CARD!</Button> */}
-            {/* 첫 페이지의 선택 항목들 */}
-            {/* { wodData && <WodCard data={wodData} insertWod={insertWod}/> } */}
         </CreateWodContainer>
     );
 }

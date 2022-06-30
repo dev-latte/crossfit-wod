@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
 import styled from "styled-components";
 
 
 import { HiUsers, HiUserGroup } from "react-icons/hi"
-import { isNull, isValidateCountNumber } from "../../apis/IsValidation";
+import { isValidateCountNumber } from "../../apis/IsValidation";
 import Input from "../atoms/Input";
 import Label from "../atoms/Label";
 import WodCardTemplate from "./WodCardTemplate";
 import MovementsList from "./MovementsList";
+import Button from "../atoms/Button";
 
 
 const TeamCategoriesWrapper = styled.div`
@@ -36,62 +36,43 @@ const TeamCategoriesWrapper = styled.div`
     }
 `;
 
-
-
-const WodCard = ({ wodData, setWodData }) => {
+// 기능 개발 후 렌더링 줄이는 방식(useRef)으로 변경
+const WodCard = ({ wodData, setWodData, wodDataForm, setWodDataForm }) => {
     const { type, isTeam, movements } = wodData;
-    const [typeCount, setTypeCount] = useState("");
-    const [teamOf, setTeamOf] = useState(false);
-    const [level, setLevel] = useState("rxd");
     const [btnClicked, setBtnClicked] = useState("users");
-    const [movementRecord, setMovementRecord] = useState();
-
-    console.log(movements);
-    // movementRecord에 값이 
-    // useEffect(() => {
-    //     console.log(movements);
-    //     const map = new Map();
-    //     movements.forEach((el, index) => {
-    //         const key = el.id;
-    //         map.set(key, {
-    //             index,
-    //             goal: "",
-    //             "goal-unit": el.unit[0],
-    //             weight: false,
-    //             "weight-unit": "lb"
-    //         });
-    //     });
-    //     setMovementRecord(map);
-    // }, [movements]);
-
 
     const onClickTeam = (e) => {
         const userType = e.currentTarget.dataset.team;
         const userCount = userType === "users" ? 2 : 3;
+        if(wodDataForm.teamOf === userCount) { return; }
         setBtnClicked(userType);
-        setTeamOf(userCount);
+        setWodDataForm({...wodDataForm, teamOf: userCount});
     }
-
-    console.log(movementRecord);
 
     const onClickRemove = (e) => {
         const key = e.currentTarget.dataset.target;
-        const result = movements.filter(el => el.id !== key);
-        setWodData({...wodData, movements: result})
+        console.log(wodData.movements);
+        // const result = wodData.movements.filter(el => el.id !== key);
+        // setWodData({...wodData, movements: result})
+    }
+
+    const onClickCreateWodDataForm = (e) => {
+        setWodDataForm({...wodDataForm, type, isTeam})
+        console.log(wodDataForm)
     }
 
 
 
     return (
-        <WodCardTemplate title="Workout of the Day!">
+        <WodCardTemplate title="Workout of the Day!" onClick={onClickCreateWodDataForm}>
             <div>
                 <Label htmlFor="type-count">{type}</Label>
                 <Input
                     type="number"
                     name="type-count"
                     id="type-count"
-                    onChange={e => setTypeCount(isValidateCountNumber(e.target.value))}
-                    value={typeCount} />
+                    onChange={e => setWodDataForm({...wodDataForm, typeCount: isValidateCountNumber(e.target.value)})}
+                    value={wodDataForm.typeCount} />
                 <span>{type === "For Time of" ? "Round" : "Minute"}</span>
             </div>
             {
@@ -110,47 +91,15 @@ const WodCard = ({ wodData, setWodData }) => {
             }
             <div>
                 <Label htmlFor="level">난이도</Label>
-                <select id="level" name="level" onChange={e => setLevel(e.target.value)} value={level}>
+                <select id="level" name="level" onChange={e => setWodDataForm({...wodDataForm, level: e.target.value})} value={wodDataForm.level}>
                     <option value="rxd" defaultValue>Rx'd</option>
                     <option value="a">A</option>
                     <option value="b">B</option>
                 </select>
-                {/* 운동 종류 및 체크 단위부터 시작 */}
-                { movements.size !== 0
-                    && <MovementsList movements={movements} edit={true} movementRecord={movementRecord} setMovementRecord={setMovementRecord} onClickRemove={onClickRemove}/>
+                { movements.length !== 0
+                    ? <MovementsList movements={movements} edit={true} onClickRemove={onClickRemove} wodDataForm={wodDataForm} setWodDataForm={setWodDataForm}/>
+                    : <div>운동을 선택해주세요.</div>
                 }
-
-                {/* <div>
-                    {
-                        <>
-                            <p>Did you go the distance?</p>
-                            <div>
-                                <input type="radio" name="complete" id="yes" value="yes" checked={complete === "yes"} onChange={e => setComplete(e.target.value)} />
-                                <Label htmlFor="yes">Yes</Label>
-                            </div>
-                            <div>
-                                <input type="radio" name="complete" id="no" value="no" checked={complete === "no"} onChange={e => setComplete(e.target.value)} />
-                                <Label htmlFor="no">No</Label>
-                            </div>
-                        </>
-                    }
-                    <p>Record WOD</p>
-                    {
-                        complete === "yes" && type === "For Time of" &&
-                        <>
-                            <input type="number" name="minutes" id="minutes" onChange={onChangeRecord} />분
-                            <input type="number" name="second" id="second" onChange={onChangeRecord} />초
-                        </>
-                    }
-                    {
-                        complete === "yes" && type !== "For Time of" &&
-                        <><input type="number" name="round" id="round" onChange={onChangeRecord} /><span>Round</span></>
-                    }
-                    {
-                        complete === "no"
-                        && <input type="text" name="result" id="result" onChange={onChangeRecord} />
-                    }
-                </div> */}
             </div>
 
         </WodCardTemplate>

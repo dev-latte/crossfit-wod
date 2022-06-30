@@ -38,7 +38,7 @@
 │   ├── components                     
 │   │   └── atoms       - 제일 작은 단위      
 │   │   └── molecules   - atom으로 구성된 단위  
-│   │   └── organisms   - molecule로 구성된 단위
+│   │   └── organisms   - molecule로 구성된 단위  
 │   │   └── templates   - organism으로 구성된 단위  
 │   ├── data            - 데이터  
 │   ├── pages           - template로 구성된 결과 페이지  
